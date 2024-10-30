@@ -4,7 +4,7 @@ import axios from '../../../../configs/axios';
 import showToast from '../../../../utills/toasts';
 import { DateTime } from 'luxon';
 import '../../../../assets/styles/my-bootstrap.css';
-import '../../../../assets/styles/ListaChamada.css';
+import '../../../../assets/styles/listaChamada.css';
 
 const BotaoImprimir = ({ texto = "Imprimir", className = "btn btn-primary btn-sm", style = {}, onClick }) => {
     return (
