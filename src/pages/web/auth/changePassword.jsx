@@ -49,7 +49,6 @@ export default function Home() {
         <>
             <div id='toast-container' className="toast-container position-absolute bottom-0 start-50 translate-middle-x p-3"></div>
             <form onSubmit={alterarSenha}>
-                {/* Campo de nome de usuário oculto */}
                 <input
                     type="text"
                     name="username"
@@ -59,7 +58,6 @@ export default function Home() {
                     style={{ display: 'none' }}
                 />
 
-                {/* Senha Atual */}
                 <div className="mb-3">
                     <label htmlFor="senhaAtual" className="form-label">Senha atual</label>
                     <input
@@ -69,14 +67,13 @@ export default function Home() {
                         value={senhaAtual}
                         onChange={(e) => setSenhaAtual(e.target.value)}
                         autoComplete="current-password"
-                        minLength="6" // Mínimo de 6 caracteres
+                        minLength="6"
                         title="A senha atual deve ter no mínimo 6 caracteres."
                         required
                     />
                 </div>
 
                 <div className="row">
-                    {/* Nova Senha */}
                     <div className="col">
                         <label htmlFor="novaSenha" className="form-label">Senha nova</label>
                         <input
@@ -86,11 +83,10 @@ export default function Home() {
                             value={novaSenha}
                             onChange={(e) => setNovaSenha(e.target.value)}
                             autoComplete="new-password"
-                            pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}" // Requer uma letra maiúscula, uma minúscula e um número
+                            pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}"
                             title="A nova senha deve ter no mínimo 8 caracteres, incluindo letras maiúsculas, minúsculas e números."
                             required
                         />
-                        {/* Validação de força da senha */}
                         {novaSenha.length > 0 && novaSenha.length < 8 && (
                             <div className="text-danger mt-1">
                                 <small>A senha deve ter pelo menos 8 caracteres.</small>
@@ -98,7 +94,6 @@ export default function Home() {
                         )}
                     </div>
 
-                    {/* Confirmar Nova Senha */}
                     <div className="col">
                         <label htmlFor="confirmarSenha" className="form-label">Confirmar senha</label>
                         <input
@@ -108,11 +103,10 @@ export default function Home() {
                             value={confirmarSenha}
                             onChange={(e) => setConfirmarSenha(e.target.value)}
                             autoComplete="new-password"
-                            pattern={novaSenha} // Verifica se a senha corresponde à nova senha
+                            pattern={novaSenha}
                             title="As senhas não coincidem."
                             required
                         />
-                        {/* Verifica se a senha de confirmação coincide com a nova senha */}
                         {confirmarSenha && confirmarSenha !== novaSenha && (
                             <div className="text-danger mt-1">
                                 <small>As senhas não coincidem.</small>
@@ -136,7 +130,6 @@ export default function Home() {
                     </button>
                 </div>
             </form>
-
         </>
     );
 }

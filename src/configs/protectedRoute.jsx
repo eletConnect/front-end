@@ -1,15 +1,23 @@
 import React, { useEffect } from 'react';
 
 const ProtectedRoute = ({ element, allowedRoles }) => {
-    const aluno = JSON.parse(sessionStorage.getItem('aluno')) || null;
-    const user = JSON.parse(sessionStorage.getItem('user')) || null;
+    let aluno = JSON.parse(sessionStorage.getItem('aluno')) || null;
+    let user = JSON.parse(sessionStorage.getItem('user')) || null;
 
-    const cargo = aluno ? 'Aluno' : user?.cargo;
+    // Definir o cargo de acordo com as informações disponíveis no sessionStorage
+    let cargo = aluno ? 'Aluno' : user?.cargo;
+
+    // Verificação de última instância para o cargo
+    if (!cargo) {
+        aluno = JSON.parse(sessionStorage.getItem('aluno')) || null;
+        user = JSON.parse(sessionStorage.getItem('user')) || null;
+        cargo = aluno ? 'Aluno' : user?.cargo;
+    }
 
     useEffect(() => {
-        // Verifica se o cargo é 'First' e se a URL atual já não é '/fa'
+        // Verifica se o cargo é 'First' e se a URL atual já não é '/first-access'
         if (cargo === 'First' && window.location.pathname !== '/first-access') {
-            // Redireciona para /fa sem entrar em loop
+            // Redireciona para /first-access sem entrar em loop
             window.location.replace('/first-access');
         }
     }, [cargo]);

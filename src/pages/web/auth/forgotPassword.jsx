@@ -8,9 +8,11 @@ import imgForgot from '../../../assets/images/web/Forgot password-cuate.png';
 
 export default function ForgotPassword() {
     const [email, setEmail] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const forgotPass = async (event) => {
         event.preventDefault();
+        setLoading(true);
 
         try {
             const response = await axios.post('/auth/forgot-password', { email });
@@ -19,6 +21,8 @@ export default function ForgotPassword() {
             }
         } catch (error) {
             document.getElementById('alert-message').innerHTML = `<div class="alert alert-danger" role="alert">${error.response.data.mensagem}</div>`;
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -47,7 +51,13 @@ export default function ForgotPassword() {
                             <p><small>Nunca compartilharemos seu e-mail com mais ninguém.</small></p>
                         </div>
                         <div className="text-center mt-3">
-                            <button type="submit" className="btn btn-primary p-2 w-100">Redefinir senha</button>
+                            <button type="submit" className="btn btn-primary p-2 w-100" disabled={loading}>
+                                {loading ? (
+                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                ) : (
+                                    "Redefinir senha"
+                                )}
+                            </button>
                         </div>
                     </form>
                 </div>

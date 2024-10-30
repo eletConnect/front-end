@@ -9,10 +9,12 @@ import imgReset from '../../../assets/images/web/Reset password-cuate.png';
 export default function ResetPassword() {
     const [senha, setSenha] = useState('');
     const [confirmarSenha, setConfirmarSenha] = useState('');
+    const [loading, setLoading] = useState(false);
     const [searchParams] = useSearchParams();
 
     const resetPass = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         if (senha.length < 6) {
             document.getElementById('inputSenha').classList.add('is-invalid');
@@ -21,6 +23,7 @@ export default function ResetPassword() {
                 document.getElementById('inputSenha').classList.remove('is-invalid');
                 document.getElementById('feedback1').innerHTML = '';
             }, 5000);
+            setLoading(false);
             return;
         }
 
@@ -31,6 +34,7 @@ export default function ResetPassword() {
                 document.getElementById('inputConfirmarSenha').classList.remove('is-invalid');
                 document.getElementById('feedback2').innerHTML = '';
             }, 5000);
+            setLoading(false);
             return;
         }
 
@@ -44,6 +48,8 @@ export default function ResetPassword() {
             }
         } catch (error) {
             document.getElementById('alert-message').innerHTML = `<div class="alert alert-danger" role="alert">${error.response.data.mensagem}</div>`;
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -77,7 +83,13 @@ export default function ResetPassword() {
                             <div id="feedback2" className="invalid-feedback"></div>
                         </div>
                         <div className="mt-3 d-flex justify-content-center align-items-center gap-2">
-                            <button type="submit" className="btn btn-primary p-2 w-100">Continuar</button>
+                            <button type="submit" className="btn btn-primary p-2 w-100" disabled={loading}>
+                                {loading ? (
+                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                ) : (
+                                    "Continuar"
+                                )}
+                            </button>
                             <Link className='btn btn-outline-secondary p-2' to={"/login"}>Cancelar</Link>
                         </div>
                     </form>

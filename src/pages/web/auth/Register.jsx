@@ -12,9 +12,11 @@ export default function Register() {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [senhaConfirm, setSenhaConfirm] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const realizarCadastro = async (event) => {
         event.preventDefault();
+        setLoading(true);
 
         if (senha.length < 6) {
             document.getElementById('inputSenha').classList.add('is-invalid');
@@ -23,6 +25,7 @@ export default function Register() {
                 document.getElementById('inputSenha').classList.remove('is-invalid');
                 document.getElementById('feedback2').innerHTML = '';
             }, 5000);
+            setLoading(false);
             return;
         }
 
@@ -33,22 +36,23 @@ export default function Register() {
                 document.getElementById('inputConfirmarSenha').classList.remove('is-invalid');
                 document.getElementById('feedback3').innerHTML = '';
             }, 5000);
+            setLoading(false);
             return;
         }
 
         try {
             const response = await axios.post('/auth/register', { nome, email, senha });
 
-            // Altere para verificar o código 201
             if (response.status === 201) {
                 document.getElementById('alert-message').innerHTML = `<div class="alert alert-success" role="alert">${response.data.mensagem}</div>`;
             }
         } catch (error) {
             const errorMessage = error.response?.data?.mensagem || 'Erro ao registrar. Tente novamente.';
             document.getElementById('alert-message').innerHTML = `<div class="alert alert-danger" role="alert">${errorMessage}</div>`;
+        } finally {
+            setLoading(false);
         }
     };
-
 
     return (
         <>
@@ -88,7 +92,13 @@ export default function Register() {
                             <div id="feedback3" className="invalid-feedback"></div>
                         </div>
                         <div className="text-center mt-3">
-                            <button type="submit" className="btn btn-primary p-2 w-100">Continuar</button>
+                            <button type="submit" className="btn btn-primary p-2 w-100" disabled={loading}>
+                                {loading ? (
+                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                ) : (
+                                    "Continuar"
+                                )}
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -99,4 +109,3 @@ export default function Register() {
         </>
     );
 }
-

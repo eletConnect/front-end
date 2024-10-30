@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../../../../configs/axios';
 import showToast from '../../../../utills/toasts';
-import * as XLSX from 'xlsx';
-import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
-
+import ExcelJS from 'exceljs';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { Tooltip } from 'bootstrap';
 
 export default function ModalCadastrarPlanilha({ escola }) {
@@ -14,7 +12,6 @@ export default function ModalCadastrarPlanilha({ escola }) {
     const [enviando, setEnviando] = useState(false);
     const [progresso, setProgresso] = useState(0);
 
-    // Ativar tooltips depois que os erros forem atualizados
     useEffect(() => {
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         tooltipTriggerList.map((tooltipTriggerEl) => new Tooltip(tooltipTriggerEl));
@@ -42,38 +39,45 @@ export default function ModalCadastrarPlanilha({ escola }) {
         lerArquivo(file);
     };
 
-    const lerArquivo = (file) => {
+    const lerArquivo = async (file) => {
         setLoading(true);
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const arrayBuffer = e.target.result;
-            const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-            const headers = jsonData[0].map(header => header.toString().trim().toLowerCase());
 
-            const normalizedData = jsonData.slice(1).map((row) => {
-                const normalizedRow = {};
-                row.forEach((value, index) => { normalizedRow[headers[index]] = value; });
-                return normalizedRow;
+        const workbook = new ExcelJS.Workbook();
+        const reader = new FileReader();
+
+        reader.onload = async (e) => {
+            const arrayBuffer = e.target.result;
+            await workbook.xlsx.load(arrayBuffer);
+
+            const worksheet = workbook.worksheets[0]; // Obtém a primeira aba da planilha
+            const headers = worksheet.getRow(1).values.slice(1).map(header => header.toString().trim().toLowerCase());
+
+            const normalizedData = [];
+            worksheet.eachRow((row, rowNumber) => {
+                if (rowNumber > 1) { // Ignora o cabeçalho
+                    const normalizedRow = {};
+                    row.values.slice(1).forEach((value, index) => {
+                        normalizedRow[headers[index]] = value;
+                    });
+                    normalizedData.push(normalizedRow);
+                }
             });
 
             setDados(normalizedData);
             validarDadosNoBackend(normalizedData);
         };
+
         reader.readAsArrayBuffer(file);
     };
 
-    // Função para validar dados no backend
     const validarDadosNoBackend = async (dados) => {
         try {
             setLoading(true);
             const response = await axios.post('/estudantes/verificar-dados', { dados, instituicao: escola.cnpj });
             if (response.data.erros) {
-                setErros(response.data.erros); // Exibir erros retornados pelo backend
+                setErros(response.data.erros);
             } else {
-                setErros({}); // Nenhum erro
+                setErros({});
             }
         } catch (error) {
             showToast('danger', 'Erro ao validar dados no servidor.');
@@ -108,35 +112,78 @@ export default function ModalCadastrarPlanilha({ escola }) {
         }
     };
 
-    const gerarPDF = () => {
-        const doc = new jsPDF();
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(16);
-        doc.text('Relatório de Erros de Validação', 105, 15, null, null, 'center');
-        doc.setFontSize(12);
-        const dataAtual = new Date().toLocaleDateString('pt-BR');
-        doc.text(`Data: ${dataAtual}`, 200, 15, null, null, 'right');
+    const gerarPDF = async () => {
+        const doc = await PDFDocument.create();
+        const page = doc.addPage([595.28, 841.89]); // A4 size in points
+        const font = await doc.embedFont(StandardFonts.Helvetica);
+        const titleFontSize = 16;
+        const textFontSize = 12;
 
+        // Cabeçalho do PDF
+        page.drawText('Relatório de Erros de Validação', {
+            x: 50,
+            y: page.getHeight() - 50,
+            size: titleFontSize,
+            font: font,
+            color: rgb(0, 0, 0.8),
+        });
+
+        const dataAtual = new Date().toLocaleDateString('pt-BR');
+        page.drawText(`Data: ${dataAtual}`, {
+            x: page.getWidth() - 150,
+            y: page.getHeight() - 50,
+            size: textFontSize,
+            font: font,
+            color: rgb(0, 0, 0),
+        });
+
+        // Verifica se existem erros
         if (Object.keys(erros).length > 0) {
-            const tableRows = [];
-            const tableHeaders = ['Matrícula', 'Nome', 'Erros de Validação'];
+            let yPosition = page.getHeight() - 100;
+            page.drawText('Alunos com Erros de Validação:', {
+                x: 50,
+                y: yPosition,
+                size: textFontSize,
+                font: font,
+                color: rgb(0.8, 0, 0),
+            });
+
+            yPosition -= 20;
             Object.entries(erros).forEach(([index, erro]) => {
                 const aluno = dados[index] || {};
-                const errosTexto = Object.values(erro).join(', ');
-                tableRows.push([aluno.matricula || 'N/A', aluno.nome || 'N/A', errosTexto]);
+                const linhaTexto = `Matrícula: ${aluno.matricula || 'N/A'}, Nome: ${aluno.nome || 'N/A'}, Erros: ${Object.values(erro).join(', ')}`;
+
+                page.drawText(linhaTexto, {
+                    x: 50,
+                    y: yPosition,
+                    size: textFontSize,
+                    font: font,
+                    color: rgb(0, 0, 0),
+                });
+
+                yPosition -= 20;
+                if (yPosition < 50) {
+                    yPosition = page.getHeight() - 50;
+                    doc.addPage();
+                }
             });
-            doc.autoTable({
-                head: [tableHeaders],
-                body: tableRows,
-                startY: 30,
-                styles: { fontSize: 10, cellPadding: 5, overflow: 'linebreak' }
-            });
-            doc.text(`Total de alunos com erros: ${Object.keys(erros).length}`, 14, doc.lastAutoTable.finalY + 10);
         } else {
-            doc.text('Nenhum erro encontrado nos dados fornecidos.', 105, 30, null, null, 'center');
+            page.drawText('Nenhum erro encontrado nos dados fornecidos.', {
+                x: 50,
+                y: page.getHeight() - 100,
+                size: textFontSize,
+                font: font,
+                color: rgb(0, 0.6, 0),
+            });
         }
 
-        doc.save('Relatorio_Erros_Validacao.pdf');
+        // Salva o PDF e faz o download
+        const pdfBytes = await doc.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'Relatorio_Erros_Validacao.pdf';
+        link.click();
     };
 
     return (

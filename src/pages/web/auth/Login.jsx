@@ -9,9 +9,11 @@ import imgLogin from '../../../assets/images/web/Computer login-cuate.png';
 export default function Login() {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const realizarLogin = async (event) => {
         event.preventDefault();
+        setIsLoading(true);
 
         try {
             const response = await axios.post('/auth/login', { email, senha });
@@ -21,6 +23,8 @@ export default function Login() {
             }
         } catch (error) {
             document.getElementById('alert-message').innerHTML = `<div class="alert alert-danger" role="alert">${error.response.data.mensagem}</div>`;
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -53,7 +57,13 @@ export default function Login() {
                             <p className="pt-1">Esqueceu sua senha? <Link to={"/forgot-password"}> Redefinir senha.</Link></p>
                         </div>
                         <div className="text-center">
-                            <button type="submit" className="btn btn-primary p-2 w-100">Continuar</button>
+                        <button type="submit" className="btn btn-primary p-2 w-100" disabled={isLoading}>
+                                {isLoading ? (
+                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                ) : (
+                                    "Continuar"
+                                )}
+                            </button>
                         </div>
                     </form>
                 </div>

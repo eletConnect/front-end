@@ -21,11 +21,10 @@ export default function ModalEditarEletiva({ codigo, instituicao }) {
     const [enviando, setEnviando] = useState(false);
 
     useEffect(() => {
-        // Checar se há mensagem de sucesso no sessionStorage
         const mensagemSucesso = sessionStorage.getItem('mensagemSucesso');
         if (mensagemSucesso) {
             showToast('success', mensagemSucesso);
-            sessionStorage.removeItem('mensagemSucesso'); // Remover mensagem após exibir
+            sessionStorage.removeItem('mensagemSucesso');
         }
 
         if (codigo && instituicao) {
@@ -34,15 +33,9 @@ export default function ModalEditarEletiva({ codigo, instituicao }) {
     }, [codigo, instituicao]);
 
     const buscarEletiva = async () => {
-        if (!codigo) return;
-
         setCarregando(true);
         try {
-            const response = await axios.post('/eletivas/buscar', {
-                codigo,
-                instituicao
-            });
-
+            const response = await axios.post('/eletivas/buscar', { codigo, instituicao });
             if (response.status === 200 && response.data.length > 0) {
                 const dadosEletiva = response.data[0];
                 setEletiva({
@@ -84,7 +77,7 @@ export default function ModalEditarEletiva({ codigo, instituicao }) {
 
             if (response.status === 200) {
                 sessionStorage.setItem('mensagemSucesso', 'Eletiva atualizada com sucesso.');
-                window.location.reload(); // Recarrega a página para aplicar a alteração e exibir a mensagem de sucesso
+                window.location.reload();
             }
         } catch (error) {
             showToast('danger', error.response?.data?.mensagem || 'Erro ao editar a eletiva.');
@@ -98,13 +91,6 @@ export default function ModalEditarEletiva({ codigo, instituicao }) {
         setEletiva((prevEletiva) => ({
             ...prevEletiva,
             [id]: id === 'total_alunos' ? parseInt(value, 10) : value
-        }));
-    };
-
-    const handleRadioChange = (e) => {
-        setEletiva((prevEletiva) => ({
-            ...prevEletiva,
-            tipo: e.target.value
         }));
     };
 
@@ -124,254 +110,108 @@ export default function ModalEditarEletiva({ codigo, instituicao }) {
                     <form onSubmit={editarEletiva}>
                         <div className="modal-body">
                             <div className="row g-3">
-                                {/* Nome da Eletiva */}
-                                <div className="col-md-6">
-                                    <label htmlFor="nome" className="form-label">
-                                        Nome da Eletiva <span className="text-danger">*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="nome"
-                                        value={eletiva.nome}
-                                        onChange={handleChange}
-                                        pattern="[A-Za-zÀ-ÿ\s]+" // Aceita letras com acentos e espaços
-                                        maxLength="76"  
-                                        title="Apenas letras e espaços são permitidos"
-                                        required
-                                    />
-                                    {eletiva.nome.length > 75 && (
-                                        <div className="text-danger mt-1">
-                                            <small>O nome não pode ultrapassar 75 caracteres.</small>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Tipo de Eletiva */}
-                                <div className="col-md-6">
-                                    <label htmlFor="tipo" className="form-label">
-                                        Tipo <span className="text-danger">*</span>
-                                    </label>
-                                    <div className="d-flex justify-content-between">
-                                        <div className="form-check">
-                                            <input
-                                                className="form-check-input"
-                                                type="radio"
-                                                id="eletivaRadio"
-                                                name="tipo"
-                                                value="Eletiva"
-                                                checked={eletiva.tipo === 'Eletiva'}
-                                                onChange={handleRadioChange}
-                                                required
-                                            />
-                                            <label className="form-check-label" htmlFor="eletivaRadio">Eletiva</label>
-                                        </div>
-                                        <div className="form-check">
-                                            <input
-                                                className="form-check-input"
-                                                type="radio"
-                                                id="projetoVidaRadio"
-                                                name="tipo"
-                                                value="Projeto de Vida"
-                                                checked={eletiva.tipo === 'Projeto de Vida'}
-                                                onChange={handleRadioChange}
-                                            />
-                                            <label className="form-check-label" htmlFor="projetoVidaRadio">Projeto de Vida</label>
-                                        </div>
-                                        <div className="form-check">
-                                            <input
-                                                className="form-check-input"
-                                                type="radio"
-                                                id="trilhaRadio"
-                                                name="tipo"
-                                                value="Trilha"
-                                                checked={eletiva.tipo === 'Trilha'}
-                                                onChange={handleRadioChange}
-                                            />
-                                            <label className="form-check-label" htmlFor="trilhaRadio">Trilha</label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Dia da Semana */}
-                                <div className="col-md-6">
-                                    <label htmlFor="dia" className="form-label">
-                                        Dia da Semana <span className="text-danger">*</span>
-                                    </label>
-                                    <select
-                                        className="form-select"
-                                        id="dia"
-                                        value={eletiva.dia}
-                                        onChange={handleChange}
-                                        required
-                                    >
-                                        <option value="Terça-feira">Terça-feira</option>
-                                        <option value="Quinta-feira">Quinta-feira</option>
-                                        <option value="Terça-feira e Quinta-feira">Terça-feira e Quinta-feira</option>
-                                    </select>
-                                </div>
-
-                                {/* Horário */}
-                                <div className="col-md-6">
-                                    <label htmlFor="horario" className="form-label">
-                                        Horário <span className="text-danger">*</span>
-                                    </label>
-                                    <select
-                                        className="form-select"
-                                        id="horario"
-                                        value={eletiva.horario}
-                                        onChange={handleChange}
-                                        required
-                                    >
-                                        <option value="1º e 2º horário">1º e 2º horário</option>
-                                        <option value="3º e 4º horário">3º e 4º horário</option>
-                                        <option value="5º e 6º horário">5º e 6º horário</option>
-                                    </select>
-                                </div>
-
-                                {/* Professor */}
-                                <div className="col-md-6">
-                                    <label htmlFor="professor" className="form-label">
-                                        Professor <span className="text-danger">*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="professor"
-                                        value={eletiva.professor}
-                                        onChange={handleChange}
-                                        pattern="[A-Za-zÀ-ÿ\s]+" // Apenas letras e espaços
-                                        maxLength="51" // Limite de 50 caracteres
-                                        title="Apenas letras e espaços são permitidos"
-                                        required
-                                    />
-                                    {eletiva.professor.length > 50 && (
-                                        <div className="text-danger mt-1">
-                                            <small>O nome do professor não pode ultrapassar 50 caracteres.</small>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Sala */}
-                                <div className="col-md-3">
-                                    <label htmlFor="sala" className="form-label">
-                                        Sala <span className="text-danger">*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="sala"
-                                        value={eletiva.sala}
-                                        onChange={handleChange}
-                                        pattern="[A-Za-z0-9\s]+" // Letras e números
-                                        maxLength="11" // Limite de 10 caracteres
-                                        title="Apenas letras e números são permitidos"
-                                        required
-                                    />
-                                    {eletiva.sala.length > 10 && (
-                                        <div className="text-danger mt-1">
-                                            <small>A sala não pode ultrapassar 10 caracteres.</small>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Total de Alunos */}
-                                <div className="col-md-3">
-                                    <label htmlFor="total_alunos" className="form-label">
-                                        Total de Alunos <span className="text-danger">*</span>
-                                    </label>
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        id="total_alunos"
-                                        value={eletiva.total_alunos}
-                                        onChange={handleChange}
-                                        min="1" // Limite mínimo
-                                        max="101" // Limite máximo
-                                        required
-                                    />
-                                    {(eletiva.total_alunos > 100 || eletiva.total_alunos < 1) && (
-                                        <div className="text-danger mt-1">
-                                            <small>O total de alunos deve estar entre 1 e 100.</small>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Descrição */}
-                                <div className="col-md-12">
-                                    <label htmlFor="descricao" className="form-label">Descrição</label>
-                                    <textarea
-                                        className="form-control"
-                                        id="descricao"
-                                        value={eletiva.descricao}
-                                        onChange={handleChange}
-                                        rows="3"
-                                        maxLength="501" // Limite de 500 caracteres
-                                    />
-                                    {eletiva.descricao.length > 500 && (
-                                        <div className="text-danger mt-1">
-                                            <small>A descrição não pode ultrapassar 500 caracteres.</small>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Exclusividade */}
-                                <div className="col-md-12">
-                                    <div className="form-check form-switch">
-                                        <input
-                                            className="form-check-input"
-                                            type="checkbox"
-                                            id="exclusivaSwitch"
-                                            checked={isExclusiva}
-                                            onChange={(e) => setIsExclusiva(e.target.checked)}
-                                        />
-                                        <label className="form-check-label" htmlFor="exclusivaSwitch">Exclusiva para uma turma?</label>
-                                    </div>
-                                </div>
-
-                                {/* Série e Turma (Exclusiva) */}
+                                <InputField
+                                    id="nome"
+                                    label="Nome da Eletiva"
+                                    value={eletiva.nome}
+                                    onChange={handleChange}
+                                    required
+                                    maxLength="76"
+                                    pattern="[A-Za-zÀ-ÿ\s]+"
+                                    feedback="O nome não pode ultrapassar 75 caracteres."
+                                />
+                                <RadioGroup
+                                    id="tipo"
+                                    label="Tipo"
+                                    value={eletiva.tipo}
+                                    onChange={handleChange}
+                                    options={['Eletiva', 'Projeto de Vida', 'Trilha']}
+                                    required
+                                />
+                                <SelectField
+                                    id="dia"
+                                    label="Dia da Semana"
+                                    value={eletiva.dia}
+                                    onChange={handleChange}
+                                    required
+                                    options={['Terça-feira', 'Quinta-feira', 'Terça-feira e Quinta-feira']}
+                                />
+                                <SelectField
+                                    id="horario"
+                                    label="Horário"
+                                    value={eletiva.horario}
+                                    onChange={handleChange}
+                                    required
+                                    options={['1º e 2º horário', '3º e 4º horário', '5º e 6º horário']}
+                                />
+                                <InputField
+                                    id="professor"
+                                    label="Professor"
+                                    value={eletiva.professor}
+                                    onChange={handleChange}
+                                    required
+                                    maxLength="51"
+                                    pattern="[A-Za-zÀ-ÿ\s]+"
+                                    feedback="O nome do professor não pode ultrapassar 50 caracteres."
+                                />
+                                <InputField
+                                    id="sala"
+                                    label="Sala"
+                                    value={eletiva.sala}
+                                    onChange={handleChange}
+                                    required
+                                    maxLength="11"
+                                    pattern="[A-Za-z0-9\s]+"
+                                    feedback="A sala não pode ultrapassar 10 caracteres."
+                                />
+                                <InputField
+                                    id="total_alunos"
+                                    label="Total de Alunos"
+                                    value={eletiva.total_alunos}
+                                    onChange={handleChange}
+                                    required
+                                    type="number"
+                                    min="1"
+                                    max="101"
+                                    feedback="O total de alunos deve estar entre 1 e 100."
+                                />
+                                <TextareaField
+                                    id="descricao"
+                                    label="Descrição"
+                                    value={eletiva.descricao}
+                                    onChange={handleChange}
+                                    maxLength="500"
+                                    rows="3"
+                                    feedback="A descrição não pode ultrapassar 500 caracteres."
+                                />
+                                <SwitchField
+                                    id="exclusivaSwitch"
+                                    label="Exclusiva para uma turma?"
+                                    checked={isExclusiva}
+                                    onChange={(e) => setIsExclusiva(e.target.checked)}
+                                />
                                 {isExclusiva && (
-                                    <div className="col-md-12">
-                                        <div className="row g-3">
-                                            <div className="col-md-6">
-                                                <label htmlFor="serie" className="form-label">Série <span className="text-danger">*</span></label>
-                                                <select
-                                                    className="form-select"
-                                                    id="serie"
-                                                    value={eletiva.serie}
-                                                    onChange={handleChange}
-                                                    required
-                                                >
-                                                    <option value="">Selecione...</option>
-                                                    <option value="1º ano">1º ano</option>
-                                                    <option value="2º ano">2º ano</option>
-                                                    <option value="3º ano">3º ano</option>
-                                                    <option value="4º ano">4º ano</option>
-                                                </select>
-                                            </div>
-
-                                            <div className="col-md-6">
-                                                <label htmlFor="turma" className="form-label">Turma <span className="text-danger">*</span></label>
-                                                <select
-                                                    className="form-select"
-                                                    id="turma"
-                                                    value={eletiva.turma}
-                                                    onChange={handleChange}
-                                                    required
-                                                >
-                                                    <option value="">Selecione...</option>
-                                                    {[...Array(26)].map((_, i) => {
-                                                        const turma = String.fromCharCode(65 + i); // Gera opções de 'A' a 'Z'
-                                                        return <option key={turma} value={turma}>{turma}</option>;
-                                                    })}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <>
+                                        <SelectField
+                                            id="serie"
+                                            label="Série"
+                                            value={eletiva.serie}
+                                            onChange={handleChange}
+                                            required
+                                            options={['1º ano', '2º ano', '3º ano', '4º ano']}
+                                        />
+                                        <SelectField
+                                            id="turma"
+                                            label="Turma"
+                                            value={eletiva.turma}
+                                            onChange={handleChange}
+                                            required
+                                            options={Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i))}
+                                        />
+                                    </>
                                 )}
                             </div>
                         </div>
-
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                             <button type="submit" className="btn btn-success" disabled={enviando || carregando}>
@@ -388,10 +228,85 @@ export default function ModalEditarEletiva({ codigo, instituicao }) {
                             </button>
                         </div>
                     </form>
-
-
-
                 </div>
+            </div>
+        </div>
+    );
+}
+
+function InputField({ id, label, feedback, ...props }) {
+    return (
+        <div className="col-md-6">
+            <label htmlFor={id} className="form-label">{label} <span className="text-danger">*</span></label>
+            <input id={id} className="form-control" {...props} />
+            {props.value.length > props.maxLength && (
+                <div className="text-danger mt-1">
+                    <small>{feedback}</small>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function SelectField({ id, label, options, ...props }) {
+    return (
+        <div className="col-md-6">
+            <label htmlFor={id} className="form-label">{label} <span className="text-danger">*</span></label>
+            <select id={id} className="form-select" {...props}>
+                <option value="">Selecione...</option>
+                {options.map((option, idx) => (
+                    <option key={idx} value={option}>{option}</option>
+                ))}
+            </select>
+        </div>
+    );
+}
+
+function RadioGroup({ id, label, options, onChange, value, required }) {
+    return (
+        <div className="col-md-6">
+            <label className="form-label">{label} <span className="text-danger">*</span></label>
+            <div className="d-flex justify-content-between">
+                {options.map((option, idx) => (
+                    <div className="form-check" key={idx}>
+                        <input
+                            className="form-check-input"
+                            type="radio"
+                            id={`${id}_${option}`}
+                            name={id}
+                            value={option}
+                            checked={value === option}
+                            onChange={onChange}
+                            required={required}
+                        />
+                        <label className="form-check-label" htmlFor={`${id}_${option}`}>{option}</label>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function TextareaField({ id, label, feedback, ...props }) {
+    return (
+        <div className="col-md-12">
+            <label htmlFor={id} className="form-label">{label}</label>
+            <textarea id={id} className="form-control" {...props} />
+            {props.value.length > props.maxLength && (
+                <div className="text-danger mt-1">
+                    <small>{feedback}</small>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function SwitchField({ id, label, checked, onChange }) {
+    return (
+        <div className="col-md-12">
+            <div className="form-check form-switch">
+                <input className="form-check-input" type="checkbox" id={id} checked={checked} onChange={onChange} />
+                <label className="form-check-label" htmlFor={id}>{label}</label>
             </div>
         </div>
     );

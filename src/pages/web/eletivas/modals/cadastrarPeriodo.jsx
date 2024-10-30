@@ -13,39 +13,39 @@ export default function ModalCadastrarPeriodo({ instituicao }) {
             key: 'selection',
         },
     ]);
-    const [enviando, setEnviando] = useState(false); // Estado para o botão de envio
+    const [enviando, setEnviando] = useState(false);
 
-    const salvarPeriodo = async (e) => {
-        e.preventDefault();
-        setEnviando(true); // Define o estado de carregamento
+    const formatarData = (data) => {
+        return data.toLocaleDateString('pt-BR', { weekday: 'long', month: 'long', day: 'numeric', });
+    };
 
+    const calcularDias = (startDate, endDate) => {
+        return Math.ceil((endDate - startDate) / (1000 * 3600 * 24));
+    };
+
+    const definirPeriodo = async (dataInicio, dataFim) => {
         try {
-            const dataInicioEscolhida = periodoSelecionado[0].startDate;
-            const dataFimEscolhida = periodoSelecionado[0].endDate;
-
-            // Definir o início do dia (00:00) para data de início
-            const dataInicioBrasilia = new Date(dataInicioEscolhida);
-            dataInicioBrasilia.setUTCHours(0, 0, 0, 0);
-
-            // Definir o fim do dia (23:59) para data de fim
-            const dataFimBrasilia = new Date(dataFimEscolhida);
-            dataFimBrasilia.setUTCHours(23, 59, 59, 999);
-
-            const response = await axios.post('/eletivas/definir-periodo', {
-                instituicao,
-                dataInicio: dataInicioBrasilia.toISOString(),
-                dataFim: dataFimBrasilia.toISOString(),
-            });
-
+            const response = await axios.post('/eletivas/definir-periodo', { instituicao, dataInicio: dataInicio.toISOString(), dataFim: dataFim.toISOString() });
             if (response.status === 200) {
-                sessionStorage.setItem('mensagemSucesso', response.data.mensagem); // Armazenar a mensagem de sucesso
-                window.location.reload(); // Recarregar a página para refletir a mudança
+                sessionStorage.setItem('mensagemSucesso', response.data.mensagem);
+                window.location.reload();
             }
         } catch (error) {
             showToast('danger', error.response?.data.mensagem || 'Erro ao definir o período de inscrições.');
-        } finally {
-            setEnviando(false); // Libera o botão de envio
         }
+    };
+
+    const salvarPeriodo = async (e) => {
+        e.preventDefault();
+        setEnviando(true);
+
+        const dataInicio = new Date(periodoSelecionado[0].startDate);
+        const dataFim = new Date(periodoSelecionado[0].endDate);
+        dataInicio.setUTCHours(0, 0, 0, 0);
+        dataFim.setUTCHours(23, 59, 59, 999);
+
+        await definirPeriodo(dataInicio, dataFim);
+        setEnviando(false);
     };
 
     return (
@@ -63,42 +63,13 @@ export default function ModalCadastrarPeriodo({ instituicao }) {
                     </div>
                     <form onSubmit={salvarPeriodo}>
                         <div className="text-center m-2">
-                            <p className='mx-4'>
-                                O período de inscrições vai de <strong>{periodoSelecionado[0].startDate.toLocaleDateString('pt-BR', {
-                                    weekday: 'long',
-                                    month: 'long',
-                                    day: 'numeric',
-                                })}</strong> até <strong>{periodoSelecionado[0].endDate.toLocaleDateString('pt-BR', {
-                                    weekday: 'long',
-                                    month: 'long',
-                                    day: 'numeric',
-                                })}</strong>, totalizando <strong>
-                                    {
-                                        Math.ceil(
-                                            (periodoSelecionado[0].endDate.getTime() - periodoSelecionado[0].startDate.getTime()) / (1000 * 3600 * 24)
-                                        )
-                                    }</strong> dias.
-                            </p>
-                            <DateRange
-                                editableDateInputs={true}
-                                onChange={(item) => setPeriodoSelecionado([item.selection])}
-                                moveRangeOnFirstSelection={false}
-                                ranges={periodoSelecionado}
-                            />
+                            <p className='mx-4'>O período de inscrições vai de <strong>{formatarData(periodoSelecionado[0].startDate)}</strong> até <strong>{formatarData(periodoSelecionado[0].endDate)}</strong>, totalizando <strong>{calcularDias(periodoSelecionado[0].startDate, periodoSelecionado[0].endDate)}</strong> dias.</p>
+                            <DateRange editableDateInputs={true} onChange={(item) => setPeriodoSelecionado([item.selection])} moveRangeOnFirstSelection={false} ranges={periodoSelecionado} />
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" className="btn btn-primary" disabled={enviando} >
-                                {enviando ? (
-                                    <>
-                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                        Definindo...
-                                    </>
-                                ) : (
-                                    <>
-                                        <i className="bi bi-calendar-check"></i>&ensp;Definir
-                                    </>
-                                )}
+                            <button type="submit" className="btn btn-primary" disabled={enviando}>
+                                {enviando ? (<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>) : (<> <i className="bi bi-calendar-check"></i>&ensp;Definir </>)}
                             </button>
                         </div>
                     </form>

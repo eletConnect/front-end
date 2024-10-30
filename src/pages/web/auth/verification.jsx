@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from '../../../configs/axios';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap';
 axios.defaults.withCredentials = true;
 
@@ -9,97 +9,86 @@ export default function Verification() {
     const [mensagem, setMensagem] = useState('Verificando...');
     const [subMensagem, setSubMensagem] = useState('');
     const navigate = useNavigate();
-    const location = useLocation();
 
-    useEffect(() => {
-        const verifyUserFromStorageOrSession = async () => {
-            // Verifica se o usuário veio da página /first-access
-            const isFirstAccess = location.pathname === '/first-access';
-            console.log('Verificando origem, é first-access?', isFirstAccess);
-
-            try {
-                let user = null;
-
-                if (isFirstAccess) {
-                    // Tenta obter o usuário do sessionStorage
-                    const storedUser = sessionStorage.getItem('user');
-                    console.log('Usuário armazenado no sessionStorage:', storedUser);
-
-                    if (storedUser) {
-                        user = JSON.parse(storedUser);
-                    } else {
-                        throw new Error('Usuário não encontrado no sessionStorage');
-                    }
-                } else {
-                    // Caso não venha da página /first-access, faz a verificação da sessão via API
-                    const responseSession = await axios.get('/auth/check-session');
-                    console.log('Resposta da verificação de sessão:', responseSession);
-
-                    if (responseSession.status === 200) {
-                        user = responseSession.data;
-                        if (user.status === 'Inativo') {
-                            handleError(new Error('Usuário inativo'), 'Redirecionando para login...');
-                            return;
-                        }
-                        sessionStorage.setItem('user', JSON.stringify(user));
-                    } else {
-                        throw new Error('Sessão inválida');
-                    }
-                }
-
-                // Checa a instituição após verificar o usuário
-                await checkInstituicao(user.id);
-            } catch (error) {
-                handleError(error, 'Redirecionando...');
-            }
-        };
-
-        verifyUserFromStorageOrSession();
-    }, [navigate, location]);
-
-    const checkInstituicao = async (userId) => {
-        try {
-            console.log('Verificando instituição para o usuário:', userId);
-            const responseEscola = await axios.post('/instituicao/verificar', { id: userId });
-            console.log('Resposta da verificação da instituição:', responseEscola);
-
-            const userData = responseEscola.data.userData;
-            if (!userData?.instituicao) {
-                console.log('Instituição não encontrada, salvando no sessionStorage.');
-                sessionStorage.setItem('escola', JSON.stringify(responseEscola.data));
-                navigateUser(false);
-            } else if (responseEscola.status === 200) {
-                console.log('Instituição verificada com sucesso.');
-                sessionStorage.setItem('escola', JSON.stringify(responseEscola.data));
-                navigateUser(true);
-            } else {
-                throw new Error('Erro ao verificar instituição');
-            }
-        } catch (error) {
-            console.error('Erro ao verificar instituição:', error);
-            handleError(error, 'Redirecionando...');
-        }
-    };
-
-    const navigateUser = (hasInstitution) => {
-        console.log('Navegando usuário, tem instituição?', hasInstitution);
-        setIsLoading(false); 
-        if (hasInstitution) {
-            navigate('/home');
+    const handleError = useCallback((error, subMsg) => {
+        let errorMessage = 'Erro inesperado. Tente novamente.';
+        if (error.response) {
+            errorMessage = error.response.data?.mensagem || error.response.statusText;
+        } else if (error.request) {
+            errorMessage = 'Não foi possível se comunicar com o servidor. Verifique sua conexão.';
         } else {
-            navigate('/first-access');
+            errorMessage = error.message;
         }
-    };
-
-    const handleError = (error, subMsg) => {
-        console.error('Erro ocorrido:', error);
-        const errorMessage = error.response?.data?.mensagem || error.message;
+        console.error('Erro ocorrido:', errorMessage);
         setMensagem(errorMessage);
         setSubMensagem(subMsg || 'Redirecionando...');
         sessionStorage.clear();
-        setTimeout(() => {
-            navigate('/login');
-        }, 2000);
+        setTimeout(() => navigate('/login'), 2000);
+    }, [navigate]);
+
+    const verifyInstitution = useCallback(async (userId) => {
+        // Verifica se a instituição já está no sessionStorage antes de fazer a requisição
+        const storedInstitution = sessionStorage.getItem('escola');
+        if (!storedInstitution) {
+            try {
+                console.log('Verificando instituição para o usuário com ID:', userId);
+                const responseInstitution = await axios.post('/instituicao/verificar', { id: userId });
+                const institutionData = responseInstitution.data.userData;
+                sessionStorage.setItem('escola', JSON.stringify(responseInstitution.data));
+                navigateUser(!!institutionData?.instituicao);
+            } catch (error) {
+                console.error('Erro ao verificar instituição:', error);
+                handleError(error, 'Redirecionando...');
+            }
+        } else {
+            // Navega diretamente se a instituição já está definida
+            const institutionData = JSON.parse(storedInstitution).userData;
+            navigateUser(!!institutionData?.instituicao);
+        }
+    }, [handleError]);
+
+    const verifySession = useCallback(async () => {
+        console.log('Início da verificação de sessão via API.');
+
+        try {
+            // Verifica se o usuário já está armazenado no sessionStorage
+            const storedUser = sessionStorage.getItem('user');
+            if (!storedUser) {
+                const responseSession = await axios.get('/auth/check-session');
+                const user = responseSession.data;
+                console.log('Sessão verificada:', user);
+
+                if (user.status === 'Inativo') {
+                    handleError(new Error('Usuário inativo'), 'Redirecionando para login...');
+                    return;
+                }
+
+                sessionStorage.setItem('user', JSON.stringify(user));
+                await verifyInstitution(user.id);
+            } else {
+                // Se o usuário já está no sessionStorage, verifica a instituição sem chamar a API novamente
+                const user = JSON.parse(storedUser);
+                await verifyInstitution(user.id);
+            }
+        } catch (error) {
+            console.error('Erro ao verificar a sessão:', error);
+            handleError(error, 'Redirecionando para login...');
+        }
+    }, [handleError, verifyInstitution]);
+
+    useEffect(() => {
+        verifySession();
+    }, [verifySession]);
+
+    const navigateUser = (hasInstitution) => {
+        setIsLoading(false);
+        if (hasInstitution) {
+            console.log('Redirecionando para /home');
+            navigate('/home');
+        } else {
+            console.log('Redirecionando para /first-access');
+            navigate('/first-access');
+        }
     };
 
     if (isLoading) {

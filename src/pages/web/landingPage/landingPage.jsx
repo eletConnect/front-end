@@ -1,43 +1,48 @@
 import React, { useState } from 'react';
+import axios from '../../../configs/axios';
 import { isMobile } from 'react-device-detect';
-import emailjs from '@emailjs/browser';
 import "./landingPage.css";
 import logo from '../../../assets/images/logo/azul.png';
 import imgSelect from '../../../assets/images/Digital transformation-cuate.png';
- 
 
 export default function LandingPage() {
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [mensagem, setMensagem] = useState('');
 
-    const enviarEmail = (e) => {
+    const enviarEmail = async (e) => {
         e.preventDefault();
 
         const templateParams = { from_name: nome, from_email: email, message: mensagem };
-        emailjs.send('service_penom2m', 'template_gp9c4bv', templateParams, 'sFI71YOCUv276jh3s')
-            .then(() => {
+
+        try {
+            const response = await axios.post('/home/enviar-email', templateParams);
+
+            if (response.status === 200) {
                 alert('Mensagem enviada com sucesso!');
                 setNome('');
                 setEmail('');
                 setMensagem('');
-            })
-            .catch(() => {
+            } else {
                 alert('Erro ao enviar mensagem. Tente novamente mais tarde.');
-            });
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+            alert('Erro ao enviar mensagem. Tente novamente mais tarde.');
+        }
     };
 
     const etapas = [
-        { id: 1, title: 'Cadastro e Configuração', description: 'Configure a escola, organize as turmas e cadastre disciplinas de maneira fácil. O sistema permite um gerenciamento completo e prático das informações.', color: 'primary' },
-        { id: 2, title: 'Inscrição de Alunos', description: 'Os alunos escolhem suas disciplinas preferidas e se inscrevem diretamente na plataforma, garantindo uma experiência simples e intuitiva para todos.', color: 'success' },
-        { id: 3, title: 'Organização das Turmas', description: 'Gerencie as turmas conforme as escolhas dos alunos e disponibilidade de vagas. Confirme a formação das turmas de acordo com a demanda e capacidade.', color: 'info' },
-        { id: 4, title: 'Acompanhamento de Matrículas', description: 'Veja o número de alunos matriculados e monitorize as inscrições em tempo real. Evite sobrecarga nas turmas e mantenha o controle de vagas.', color: 'warning' },
-        { id: 5, title: 'Controle de Presença', description: 'Gere listas de presença e controle a assiduidade dos alunos. Acompanhe a frequência e garanta a participação dos estudantes em cada disciplina.', color: 'danger' },
-        { id: 6, title: 'Visualização de Desempenho', description: 'Monitore o desempenho das turmas e dos alunos em cada disciplina. Obtenha insights e informações para apoiar a evolução educacional.', color: 'primary' },
-        { id: 7, title: 'Atualização de Informações', description: 'Atualize facilmente informações sobre disciplinas, turmas e alunos. Mantenha a base de dados sempre organizada e correta.', color: 'success' },
-        { id: 8, title: 'Acesso Restrito', description: 'Controle o acesso dos usuários conforme o cargo e função. Permita que cada um veja apenas o que for necessário, garantindo a segurança das informações.', color: 'info' },
-        { id: 9, title: 'Relatórios Simples', description: 'Gere relatórios de maneira rápida para ter uma visão geral das disciplinas e turmas. Facilite a tomada de decisões com base em informações atualizadas.', color: 'warning' },
-        { id: 10, title: 'Suporte Personalizado', description: 'Conte com um suporte ágil e dedicado para solucionar dúvidas e acompanhar a utilização do sistema da melhor forma possível.', color: 'danger' },
+        { id: 1, title: 'Cadastro e Configuração', description: 'Configure a escola, organize as turmas e cadastre disciplinas de maneira fácil.', color: 'primary' },
+        { id: 2, title: 'Inscrição de Alunos', description: 'Os alunos escolhem suas disciplinas preferidas e se inscrevem diretamente na plataforma.', color: 'success' },
+        { id: 3, title: 'Organização das Turmas', description: 'Gerencie as turmas conforme as escolhas dos alunos e disponibilidade de vagas.', color: 'info' },
+        { id: 4, title: 'Acompanhamento de Matrículas', description: 'Veja o número de alunos matriculados e monitorize as inscrições em tempo real.', color: 'warning' },
+        { id: 5, title: 'Controle de Presença', description: 'Gere listas de presença e controle a assiduidade dos alunos.', color: 'danger' },
+        { id: 6, title: 'Visualização de Desempenho', description: 'Monitore o desempenho das turmas e dos alunos em cada disciplina.', color: 'primary' },
+        { id: 7, title: 'Atualização de Informações', description: 'Atualize facilmente informações sobre disciplinas, turmas e alunos.', color: 'success' },
+        { id: 8, title: 'Acesso Restrito', description: 'Controle o acesso dos usuários conforme o cargo e função.', color: 'info' },
+        { id: 9, title: 'Relatórios Simples', description: 'Gere relatórios de maneira rápida para ter uma visão geral das disciplinas e turmas.', color: 'warning' },
+        { id: 10, title: 'Suporte Personalizado', description: 'Conte com um suporte ágil e dedicado para solucionar dúvidas.', color: 'danger' },
     ];
 
     return (
@@ -81,11 +86,11 @@ export default function LandingPage() {
                     <div id='painel-text' className="row text-white">
                         <div className="col-md-6">
                             <h1 className="fw-bold">Simplificando a gestão de disciplinas eletivas!</h1>
-                            <p className="fs-5">A eletConnect é uma plataforma intuitiva que transforma a gestão de disciplinas eletivas. Com apenas alguns cliques, os alunos podem realizar suas matrículas diretamente pelo celular, de maneira rápida e independente. Enquanto isso, as instituições têm controle total sobre a organização das turmas e o acompanhamento de vagas, tornando o processo mais ágil, eficiente e acessível para todos.</p>
+                            <p className="fs-5">A eletConnect é uma plataforma intuitiva que transforma a gestão de disciplinas eletivas.</p>
                             <a className="btn btn-primary" href={isMobile ? "/m/login" : "/login"}>Começar</a>
                         </div>
                         <div className="col-md-6 text-center robot">
-                            <img className='' src={imgSelect} width={400} alt="Imagem de transformação digital" />
+                            <img src={imgSelect} width={400} alt="Imagem de transformação digital" />
                         </div>
                     </div>
                 </section>
@@ -94,7 +99,7 @@ export default function LandingPage() {
                 <section id='funcionalidades' className='bg-body-tertiary p-5'>
                     <div className="painel d-flex justify-content-between gap-4">
                         <div className="w-25">
-                            <h4 className="fw-bold text-decoration-underline">Inscrições Simples </h4>
+                            <h4 className="fw-bold text-decoration-underline">Inscrições Simples</h4>
                             <p className="fs-5 m-0">Permita que os estudantes escolham suas eletivas de forma fácil e digital pelo smartphone.</p>
                         </div>
                         <div className="w-25">
@@ -119,7 +124,7 @@ export default function LandingPage() {
                     <div className="mt-4">
                         <div id='scroll-etapa' className="d-flex gap-2 overflow-x-scroll">
                             {etapas.map(etapa => (
-                                <div key={etapa.id} className={`col-md-4 d-flex flex-column bg-white shadow-sm p-4 `}>
+                                <div key={etapa.id} className={`col-md-4 d-flex flex-column bg-white shadow-sm p-4`}>
                                     <h5 className={`fw-bold text-${etapa.color}`}>{etapa.id}. {etapa.title}</h5>
                                     <p className="fs-6 text-muted m-0">{etapa.description}</p>
                                 </div>
