@@ -26,7 +26,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,jsx,css,html,svg,png,ico}'], // Adiciona suporte a .jsx no Workbox
+        globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // Limite para 3 MB
@@ -54,7 +54,7 @@ export default defineConfig({
           }
         },
       },
-      chunkSizeWarningLimit: 1500,
     },
+    chunkSizeWarningLimit: 1500, // Ajuste para 1500 KB para evitar o aviso
   },
 });
