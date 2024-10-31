@@ -27,25 +27,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
-        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // Ajuste para seu limite de cache
-        runtimeCaching: [
-          {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'images',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 30 * 24 * 60 * 60, // Armazena por 30 dias
-              },
-              matchOptions: {
-                ignoreVary: true,
-                ignoreSearch: true,
-              },
-              maximumFileSizeToCacheInBytes: 300 * 1024, // Limite de 300 KB para imagens
-            },
-          },
-        ],
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
       },
       devOptions: {
         enabled: false,
