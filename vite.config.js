@@ -26,9 +26,10 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
+        globPatterns: ['**/*.{js,jsx,css,html,svg,png,ico}'], // Adiciona suporte a .jsx no Workbox
         cleanupOutdatedCaches: true,
         clientsClaim: true,
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // Limite para 3 MB
       },
       devOptions: {
         enabled: false,
@@ -42,10 +43,18 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'], // Divisão de código
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) return 'react';
+            if (id.includes('luxon')) return 'luxon';
+            if (id.includes('exceljs')) return 'exceljs';
+            if (id.includes('pdf-lib')) return 'pdf-lib';
+            if (id.includes('axios')) return 'axios';
+            return 'vendor';
+          }
         },
       },
+      chunkSizeWarningLimit: 1500,
     },
   },
 });
