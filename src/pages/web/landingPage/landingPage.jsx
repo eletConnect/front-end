@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from '../../../configs/axios';
 import { isMobile } from 'react-device-detect';
 import "./landingPage.css";
@@ -9,6 +10,7 @@ export default function LandingPage() {
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [mensagem, setMensagem] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (window.matchMedia('(display-mode: standalone)').matches) {
