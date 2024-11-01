@@ -10,6 +10,12 @@ export default function LandingPage() {
     const [email, setEmail] = useState('');
     const [mensagem, setMensagem] = useState('');
 
+    useEffect(() => {
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            navigate(isMobile ? '/m/login' : '/login');
+        }
+    }, [navigate]);
+
     const enviarEmail = async (e) => {
         e.preventDefault();
 
