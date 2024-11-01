@@ -68,9 +68,11 @@ export default function Login() {
                     </button>
                 </form>
                 <div className="text-center mt-3">
-                    <p className="small mb-1">Esqueceu a senha? <Link to="/m/forgot-password">Redefinir</Link></p>
-                    <InstallButton />
+                    <p className="small m-0">Esqueceu a senha? <Link to="/m/forgot-password">Redefinir</Link></p>
                 </div>
+            </div>
+            <div className="m-2">
+                <InstallButton />
             </div>
         </div>
     );
