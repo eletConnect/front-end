@@ -106,19 +106,19 @@ export default function LandingPage() {
                 {/* Seção de Funcionalidades */}
                 <section id='funcionalidades' className='bg-body-tertiary p-5'>
                     <div className="painel d-flex justify-content-between gap-4">
-                        <div className="w-25">
+                        <div className={isMobile ? 'w-100' : 'w-25'}>
                             <h4 className="fw-bold text-decoration-underline">Inscrições Simples</h4>
                             <p className="fs-5 m-0">Permita que os estudantes escolham suas eletivas de forma fácil e digital pelo smartphone.</p>
                         </div>
-                        <div className="w-25">
+                        <div className={isMobile ? 'w-100' : 'w-25'}>
                             <h4 className="fw-bold text-decoration-underline">Visualização de Matrículas</h4>
                             <p className="fs-5 m-0">Tenha um controle total sobre o número de estudantes matriculados em cada eletiva.</p>
                         </div>
-                        <div className='w-25'>
+                        <div className={isMobile ? 'w-100' : 'w-25'}>
                             <h4 className="fw-bold text-decoration-underline">Acompanhamento de Vagas</h4>
                             <p className="fs-5 m-0">Monitore as vagas disponíveis em cada eletiva e evite sobrecarga nas turmas.</p>
                         </div>
-                        <div className='w-25'>
+                        <div className={isMobile ? 'w-100' : 'w-25'}>
                             <h4 className="fw-bold text-decoration-underline">Personalização de Eletivas</h4>
                             <p className="fs-5 m-0">Monitore as vagas disponíveis em cada eletiva e evite sobrecarga nas turmas.</p>
                         </div>
