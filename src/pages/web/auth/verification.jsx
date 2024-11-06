@@ -46,7 +46,7 @@ export default function Verification() {
         try {
             const storedUser = sessionStorage.getItem('user');
             if (!storedUser) {
-                const responseSession = await axios.get('/auth/check-session');
+                const responseSession = await axios.get('/auth/check-session', { withCredentials: true });
                 const user = responseSession.data;
 
                 if (user.status === 'Inativo') {
