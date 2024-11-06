@@ -19,10 +19,9 @@ export default function ModalCadastrarEletiva({ usuario }) {
     const [eletiva, setEletiva] = useState(INITIAL_STATE);
     const [enviando, setEnviando] = useState(false);
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setEletiva(prevState => ({
-            ...prevState,
+    const handleChange = ({ target: { name, value, type, checked } }) => {
+        setEletiva(prev => ({
+            ...prev,
             [name]: type === 'checkbox' ? checked : type === 'number' ? Number(value) : value,
         }));
     };
@@ -31,16 +30,13 @@ export default function ModalCadastrarEletiva({ usuario }) {
         e.preventDefault();
         setEnviando(true);
 
-        // Verificar o estado antes de enviar
-        console.log('Eletiva:', eletiva);
-
         try {
-            const resposta = await axios.post('/eletivas/cadastrar', { 
+            const resposta = await axios.post('/eletivas/cadastrar', {
                 ...eletiva,
-                instituicao: usuario.instituicao, 
-                status: 'Ativo', 
-                serie: eletiva.isExclusiva ? eletiva.serie : null, 
-                turma: eletiva.isExclusiva ? eletiva.turma : null 
+                instituicao: usuario.instituicao,
+                status: 'Ativo',
+                serie: eletiva.isExclusiva ? eletiva.serie : null,
+                turma: eletiva.isExclusiva ? eletiva.turma : null,
             });
             if (resposta.status === 201) {
                 sessionStorage.setItem('mensagemSucesso', resposta.data.mensagem);
@@ -58,24 +54,22 @@ export default function ModalCadastrarEletiva({ usuario }) {
             <div className="modal-dialog modal-lg">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <div className="d-flex align-items-center gap-2">
-                            <i className="bi bi-journal-bookmark-fill fs-3"></i>
-                            <h4 className='m-0 fs-4'>Eletivas</h4>
-                            <i className="bi bi-arrow-right-short fs-4"></i>
-                            <h5 className="m-0">Cadastrar</h5>
-                        </div>
+                        <h4 className='modal-title fs-4 d-flex align-items-center gap-2'>
+                            <i className="bi bi-journal-bookmark-fill fs-3"></i> Eletivas
+                            <i className="bi bi-arrow-right-short fs-4"></i> Cadastrar
+                        </h4>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form onSubmit={cadastrarEletiva}>
                         <div className="modal-body">
                             <div className="row g-3">
-                                <InputField tamanhoCol='6' name="nome" label="Nome da Eletiva" value={eletiva.nome} onChange={handleChange} required pattern="[A-Za-zÀ-ÿ\s]+" maxLength="76" feedback="O nome não pode ultrapassar 75 caracteres." />
+                                <InputField size="6" name="nome" label="Nome da Eletiva" value={eletiva.nome} onChange={handleChange} required pattern="[A-Za-zÀ-ÿ\s]+" maxLength="75" feedback="O nome não pode ultrapassar 75 caracteres." />
                                 <RadioGroup name="tipo" label="Tipo" value={eletiva.tipo} onChange={handleChange} options={['Eletiva', 'Projeto de Vida', 'Trilha']} required />
                                 <SelectField name="dia" label="Dia da semana" value={eletiva.dia} onChange={handleChange} required options={['Terça-feira', 'Quinta-feira', 'Terça-feira e Quinta-feira']} />
                                 <SelectField name="horario" label="Horário" value={eletiva.horario} onChange={handleChange} required options={['1º e 2º horário', '3º e 4º horário', '5º e 6º horário']} />
-                                <InputField tamanhoCol='6' name="professor" label="Professor" value={eletiva.professor} onChange={handleChange} required pattern="[A-Za-zÀ-ÿ\s]+" maxLength="51" feedback="O nome do professor não pode ultrapassar 50 caracteres." />
-                                <InputField tamanhoCol='3' name="sala" label="Sala" value={eletiva.sala} onChange={handleChange} required pattern="[A-Za-z0-9\s]+" maxLength="11" feedback="A sala não pode ultrapassar 10 caracteres." />
-                                <InputField tamanhoCol='3' name="totalAlunos" label="Total de Alunos" value={eletiva.totalAlunos} onChange={handleChange} required type="number" min="1" max="101" feedback="O total de alunos deve estar entre 1 e 100." />
+                                <InputField size="6" name="professor" label="Professor" value={eletiva.professor} onChange={handleChange} required pattern="[A-Za-zÀ-ÿ\s]+" maxLength="50" feedback="O nome do professor não pode ultrapassar 50 caracteres." />
+                                <InputField size="3" name="sala" label="Sala" value={eletiva.sala} onChange={handleChange} required pattern="[A-Za-z0-9\s]+" maxLength="10" feedback="A sala não pode ultrapassar 10 caracteres." />
+                                <InputField size="3" name="totalAlunos" label="Total de Alunos" value={eletiva.totalAlunos} onChange={handleChange} required type="number" min="1" max="100" feedback="O total de alunos deve estar entre 1 e 100." />
                                 <SwitchField name="isExclusiva" label="Exclusiva para uma turma?" checked={eletiva.isExclusiva} onChange={handleChange} />
                                 {eletiva.isExclusiva && (
                                     <>
@@ -98,9 +92,9 @@ export default function ModalCadastrarEletiva({ usuario }) {
     );
 }
 
-function InputField({ name, label, feedback, tamanhoCol, ...props }) {
+function InputField({ name, label, feedback, size, ...props }) {
     return (
-        <div className={`col-md-${tamanhoCol}`}>
+        <div className={`col-md-${size}`}>
             <label htmlFor={name} className="form-label">{label} <span className="text-danger">*</span></label>
             <input name={name} id={name} className="form-control" {...props} />
             {props.value && props.value.length > props.maxLength && (
