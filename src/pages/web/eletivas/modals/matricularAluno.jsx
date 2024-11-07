@@ -27,7 +27,7 @@ export default function ModalMatricularAluno({
         }
 
         setEnviando(true); // Ativa o estado de envio (loading)
-        
+
         try {
             const resposta = await axios.post('/eletivas/matricular-multiplos', {
                 instituicao: eletiva.instituicao,
@@ -138,22 +138,8 @@ export default function ModalMatricularAluno({
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button
-                            type="button"
-                            className="btn btn-success"
-                            disabled={enviando} // Desabilita o botão enquanto estiver enviando
-                            onClick={matricularAlunos}
-                        >
-                            {enviando ? (
-                                <>
-                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                    Matriculando...
-                                </>
-                            ) : (
-                                <>
-                                    <i className="bi bi-person-plus"></i>&ensp;Matricular
-                                </>
-                            )}
+                        <button type="button" className="btn btn-success" disabled={enviando} onClick={matricularAlunos} >
+                            {enviando ? (<span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>) : (<> <i className="bi bi-person-plus"></i>&ensp;Matricular  </>)}
                         </button>
                     </div>
                 </div>

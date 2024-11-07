@@ -42,16 +42,7 @@ export default function ModalExcluirEletiva({ codigo, tipo, instituicao }) {
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                             <button type='submit' className='btn btn-danger' disabled={excluindo} >
-                                {excluindo ? (
-                                    <>
-                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                        Excluindo...
-                                    </>
-                                ) : (
-                                    <>
-                                        <i className="bi bi-trash3-fill"></i>&ensp;Excluir
-                                    </>
-                                )}
+                                {excluindo ? (<span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>) : (<><i className="bi bi-trash3-fill"></i>&ensp;Excluir </>)}
                             </button>
                         </div>
                     </form>

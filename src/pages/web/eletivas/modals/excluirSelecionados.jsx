@@ -55,16 +55,7 @@ export default function ModalExcluirSelecionados({ eletivasSelecionadas, carrega
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                         <button type="button" className="btn btn-danger" onClick={excluirSelecionadas} disabled={loading} >
-                            {loading ? (
-                                <>
-                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                    Excluindo...
-                                </>
-                            ) : (
-                                <>
-                                    <i className="bi bi-trash3-fill"></i>&ensp;Excluir
-                                </>
-                            )}
+                            {loading ? (<span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>) : (<> <i className="bi bi-trash3-fill"></i>&ensp;Excluir </>)}
                         </button>
                     </div>
                 </div>

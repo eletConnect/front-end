@@ -134,7 +134,7 @@ export default function GerenciarEletiva() {
 
     return (
         <>
-            <div id='toast-container' className="toast-container position-fixed bottom-0 end-0 p-3"></div>
+            <div id='toast-container' className="toast-container position-absolute bottom-0 end-0 m-2"></div>
             <Header />
             <main id='main-section'>
                 <section id='section'>

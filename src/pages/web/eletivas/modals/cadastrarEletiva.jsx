@@ -13,7 +13,12 @@ const INITIAL_STATE = {
     serie: '',
     turma: '',
     isExclusiva: false,
+    exclusividade: '', // Adicionado para indicar a exclusividade
+    series: [], // Adicionado para múltiplas séries
 };
+
+const seriesOpcoes = ['1º ano', '2º ano', '3º ano'];
+const turmasOpcoes = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i)); // Gera A-Z
 
 export default function ModalCadastrarEletiva({ usuario }) {
     const [eletiva, setEletiva] = useState(INITIAL_STATE);
@@ -26,6 +31,19 @@ export default function ModalCadastrarEletiva({ usuario }) {
         }));
     };
 
+    const handleExclusividadeChange = (tipo) => {
+        setEletiva(prev => ({ ...prev, exclusividade: tipo, series: [], serie: '', turma: '' }));
+    };
+
+    const handleSeriesChange = (serie) => {
+        setEletiva(prev => {
+            const seriesAtualizadas = prev.series.includes(serie)
+                ? prev.series.filter(s => s !== serie)
+                : [...prev.series, serie];
+            return { ...prev, series: seriesAtualizadas };
+        });
+    };
+
     const cadastrarEletiva = async (e) => {
         e.preventDefault();
         setEnviando(true);
@@ -35,8 +53,9 @@ export default function ModalCadastrarEletiva({ usuario }) {
                 ...eletiva,
                 instituicao: usuario.instituicao,
                 status: 'Ativo',
-                serie: eletiva.isExclusiva ? eletiva.serie : null,
-                turma: eletiva.isExclusiva ? eletiva.turma : null,
+                serie: eletiva.isExclusiva && eletiva.exclusividade === 'turma' ? eletiva.serie : null,
+                turma: eletiva.isExclusiva && eletiva.exclusividade === 'turma' ? eletiva.turma : null,
+                series: eletiva.isExclusiva && eletiva.exclusividade === 'serie' ? eletiva.series : null,
             });
             if (resposta.status === 201) {
                 sessionStorage.setItem('mensagemSucesso', resposta.data.mensagem);
@@ -70,11 +89,86 @@ export default function ModalCadastrarEletiva({ usuario }) {
                                 <InputField size="6" name="professor" label="Professor" value={eletiva.professor} onChange={handleChange} required pattern="[A-Za-zÀ-ÿ\s]+" maxLength="50" feedback="O nome do professor não pode ultrapassar 50 caracteres." />
                                 <InputField size="3" name="sala" label="Sala" value={eletiva.sala} onChange={handleChange} required pattern="[A-Za-z0-9\s]+" maxLength="10" feedback="A sala não pode ultrapassar 10 caracteres." />
                                 <InputField size="3" name="totalAlunos" label="Total de Alunos" value={eletiva.totalAlunos} onChange={handleChange} required type="number" min="1" max="100" feedback="O total de alunos deve estar entre 1 e 100." />
-                                <SwitchField name="isExclusiva" label="Exclusiva para uma turma?" checked={eletiva.isExclusiva} onChange={handleChange} />
+                                <SwitchField name="isExclusiva" label="Essa eletiva é exclusiva?" checked={eletiva.isExclusiva} onChange={handleChange} />
                                 {eletiva.isExclusiva && (
                                     <>
-                                        <SelectField name="serie" label="Série" value={eletiva.serie} onChange={handleChange} required options={['1º ano', '2º ano', '3º ano']} />
-                                        <SelectField name="turma" label="Turma" value={eletiva.turma} onChange={handleChange} required options={Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i))} />
+                                        <div className="form-group mb-3">
+                                            <div className="d-flex gap-3">
+                                                <div className="form-check">
+                                                    <input
+                                                        type="radio"
+                                                        className="form-check-input"
+                                                        id="exclusividadeSerie"
+                                                        name="exclusividade"
+                                                        value="serie"
+                                                        checked={eletiva.exclusividade === 'serie'}
+                                                        onChange={() => handleExclusividadeChange('serie')}
+                                                    />
+                                                    <label className="form-check-label" htmlFor="exclusividadeSerie">Por série</label>
+                                                </div>
+                                                <div className="form-check">
+                                                    <input
+                                                        type="radio"
+                                                        className="form-check-input"
+                                                        id="exclusividadeTurma"
+                                                        name="exclusividade"
+                                                        value="turma"
+                                                        checked={eletiva.exclusividade === 'turma'}
+                                                        onChange={() => handleExclusividadeChange('turma')}
+                                                    />
+                                                    <label className="form-check-label" htmlFor="exclusividadeTurma">Por turma</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {eletiva.exclusividade === 'serie' && (
+                                            <div className="form-group">
+                                                <label>Selecione as séries</label>
+                                                <div className="d-flex gap-4">
+                                                    {seriesOpcoes.map(serieOp => (
+                                                        <div className="form-check" key={serieOp}>
+                                                            <input
+                                                                className="form-check-input"
+                                                                type="checkbox"
+                                                                id={`serie-${serieOp}`}
+                                                                checked={eletiva.series.includes(serieOp)}
+                                                                onChange={() => handleSeriesChange(serieOp)}
+                                                            />
+                                                            <label className="form-check-label" htmlFor={`serie-${serieOp}`}>{serieOp}</label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                        {eletiva.exclusividade === 'turma' && (
+                                            <div className='row'>
+                                                <div className="col">
+                                                    <label>Selecione o ano</label>
+                                                    <select
+                                                        className="form-select"
+                                                        value={eletiva.serie}
+                                                        onChange={(e) => handleChange({ target: { name: 'serie', value: e.target.value } })}
+                                                    >
+                                                        <option value="">Selecione o ano</option>
+                                                        {seriesOpcoes.map(serieOp => (
+                                                            <option key={serieOp} value={serieOp}>{serieOp}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                <div className="col">
+                                                    <label>Selecione a turma</label>
+                                                    <select
+                                                        className="form-select"
+                                                        value={eletiva.turma}
+                                                        onChange={(e) => handleChange({ target: { name: 'turma', value: e.target.value } })}
+                                                    >
+                                                        <option value="">Selecione a turma</option>
+                                                        {turmasOpcoes.map(turma => (
+                                                            <option key={turma} value={turma}>{turma}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        )}
                                     </>
                                 )}
                             </div>
