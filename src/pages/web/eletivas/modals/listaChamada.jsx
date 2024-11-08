@@ -74,7 +74,7 @@ const ListaChamada = React.forwardRef((props, ref) => {
             case 'terca-feira':
                 return 2;
             case 'quinta-feira':
-                return 4; 
+                return 4;
             default:
                 return null;
         }
@@ -124,7 +124,9 @@ const ListaChamada = React.forwardRef((props, ref) => {
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     <span className='d-flex align-items-center gap-2'>
-                        <img src={escola.logotipo} width={50} alt="" />
+                        {escola.logotipo && (
+                            <img src={escola.logotipo} width={50} alt="Logotipo da escola" />
+                        )}
                         <h4 className='m-0'>{escola.nome}</h4>
                     </span>
                     <h5 className='m-0'>| Lista de Chamada</h5>
@@ -202,7 +204,7 @@ export default function ChamadaComImpressao() {
         window.print();
 
         document.body.innerHTML = conteudoOriginal;
-        window.location.reload(); 
+        window.location.reload();
     };
 
     return (

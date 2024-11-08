@@ -13,15 +13,12 @@ export default function Instituicao() {
             <main id="main-section">
                 <section id='section'>
                     <div className="box">
-                        {/* Título */}
                         <div className="title">
                             <span className="d-flex align-items-center gap-2 text-black">
                                 <i className="bi bi-grid-1x2 fs-3"></i>
                                 <h3 className="m-0 fs-4">Primeiro acesso</h3>
                             </span>
                         </div>
-
-                        {/* Conteúdo */}
                         <div className="p-4">
                             <div className="d-flex justify-content-between align-items-center gap-3">
                                 <h5 className="m-0">Cadastrar nova instituição</h5>
@@ -30,6 +27,7 @@ export default function Instituicao() {
                                 </button>
                             </div>
                             <p className="mt-2">Para cadastrar uma nova instituição de ensino, preencha as informações nos campos abaixo.</p>
+                            
                             <hr />
 
                             <div className="d-flex justify-content-between align-items-center gap-3 mt-4">

@@ -18,11 +18,10 @@ export default function SettingsInstituicao() {
     const verificarCEP = async (cep) => {
         if (!cep) return;
         try {
-            const formattedCep = cep.replace(/\D/g, ''); // Remove qualquer não-numérico
+            const formattedCep = cep.replace(/\D/g, '');
             const response = await axios.get(`https://brasilapi.com.br/api/cep/v1/${formattedCep}`, { withCredentials: false });
             if (response.status === 200) {
-                setEEndereco(response.data.street); // Atualiza o endereço com a resposta
-
+                setEEndereco(response.data.street);
             }
         } catch (error) {
             showToast('danger', 'Erro ao verificar CEP.');
@@ -35,12 +34,12 @@ export default function SettingsInstituicao() {
             const response = await axios.get(`https://brasilapi.com.br/api/cnpj/v1/${cnpj}`, { withCredentials: false });
             if (response.status === 200) {
                 const cnpjData = response.data;
-                setENome(cnpjData.nome_fantasia || cnpjData.razao_social); // Atualiza o nome da instituição
-                setEEndereco(cnpjData.logradouro); // Atualiza o endereço
-                const cnpjCep = cnpjData.cep.replace(/\D/g, ''); // Remove caracteres não-numéricos do CEP
-                setECEP(cnpjCep); // Atualiza o campo CEP
-                await verificarCEP(cnpjCep); // Chama a verificação do CEP para atualizar o endereço automaticamente
-
+                setENome(cnpjData.nome_fantasia || cnpjData.razao_social);
+                setEEndereco(cnpjData.logradouro);
+                const cnpjCep = cnpjData.cep.replace(/\D/g, '');
+                setECEP(cnpjCep);
+                setETelefone(cnpjData.ddd_telefone_1);
+                await verificarCEP(cnpjCep);
             }
         } catch (error) {
             showToast('danger', 'Erro ao validar o CNPJ.');
@@ -53,6 +52,28 @@ export default function SettingsInstituicao() {
             setLogo(file);
             const previewUrl = URL.createObjectURL(file);
             setLogotipoUrl(previewUrl);
+        }
+    };
+
+    const removerLogotipo = async () => {
+        if (!logotipoUrl || logotipoUrl === 'https://via.placeholder.com/150') {
+            showToast('info', 'Nenhum logotipo para remover.');
+            return;
+        }
+
+        try {
+            const logotipoPath = logotipoUrl.split('/').pop();
+            const { error } = await supabase.storage.from('logotipo').remove([logotipoPath]);
+            if (error) {
+                showToast('danger', 'Erro ao remover o logotipo.');
+                return;
+            }
+
+            setLogotipoUrl('https://via.placeholder.com/150');
+            sessionStorage.setItem('escola', JSON.stringify({ ...escola, logotipo: null }));
+            showToast('success', 'Logotipo removido com sucesso.');
+        } catch (error) {
+            showToast('danger', 'Erro inesperado ao remover o logotipo.');
         }
     };
 
@@ -106,12 +127,17 @@ export default function SettingsInstituicao() {
 
     return (
         <>
-            <div id='toast-container' className="toast-container position-absolute bottom-0 start-50 translate-middle-x p-3"></div>
-            <div className="d-flex gap-4">
-                <div className="d-flex flex-column align-items-center gap-3">
-                    <img width={250} src={logotipoUrl || 'https://via.placeholder.com/150'} alt="Logo da instituição" />
-                    <input type="file" onChange={alterarLogotipo} />
+            <div className="d-flex align-items-center gap-4">
+                <div className='text-end'>
+                    <div className="d-flex flex-column align-items-center gap-3">
+                        <img width={250} src={logotipoUrl || 'https://via.placeholder.com/250'} alt="Logo da instituição" />
+                        <input type="file" onChange={alterarLogotipo} />
+                    </div>
+                    {logotipoUrl && logotipoUrl !== 'https://via.placeholder.com/250' && (
+                        <p className='m-0'><a href="#" className="pe-auto text-danger" onClick={removerLogotipo}>Remover logotipo</a></p>
+                    )}
                 </div>
+                <div className='vr'></div>
                 <form onSubmit={alterarInstituicao} className="w-100">
                     <div className="row g-3">
                         <div className="col-md-6">
@@ -126,9 +152,11 @@ export default function SettingsInstituicao() {
                                 value={eCnpj}
                                 onChange={(e) => setECnpj(e.target.value)}
                                 onBlur={() => validarCNPJ(eCnpj)}
-                                pattern="\d{14}" // Validação de CNPJ (14 dígitos)
+                                pattern="\d{14}"
+                                maxLength={14}
                                 title="Digite um CNPJ válido com 14 dígitos (Remova caracteres especiais)"
                                 required
+                                disabled
                             />
                             {eCnpj && !/^\d{14}$/.test(eCnpj) && (
                                 <div className="text-danger mt-1">
@@ -147,7 +175,7 @@ export default function SettingsInstituicao() {
                                 className="form-control"
                                 value={eTelefone}
                                 onChange={(e) => setETelefone(e.target.value)}
-                                pattern="^\d{2}\d{4,5}\d{4}$" // Padrão para telefone com 10 ou 11 dígitos
+                                pattern="^\d{2}\d{4,5}\d{4}$"
                                 title="Digite um telefone válido, no formato DDD + Número"
                                 required
                             />
@@ -165,7 +193,7 @@ export default function SettingsInstituicao() {
                                 value={eCep}
                                 onChange={(e) => setECEP(e.target.value)}
                                 onBlur={() => verificarCEP(eCep)}
-                                pattern="^\d{8}$" // Padrão para CEP sem hífen
+                                pattern="^\d{8}$"
                                 title="Digite um CEP válido com 8 dígitos"
                                 required
                             />
@@ -179,9 +207,9 @@ export default function SettingsInstituicao() {
                             <label className="form-label">Endereço</label>
                             <input type="text" className="form-control" value={eEndereco} onChange={(e) => setEEndereco(e.target.value)} />
                         </div>
-                        <div className="text-end mt-4">
+                        <div className="text-end ">
                             <button type='submit' className="btn btn-success" disabled={loading}>
-                                <i className="bi bi-pencil"></i>&ensp;{loading ? 'Editando...' : 'Editar'}
+                                {loading ? (<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>) : (<><i className="bi bi-pencil"></i>&ensp;Editar</>)}
                             </button>
                         </div>
                     </div>

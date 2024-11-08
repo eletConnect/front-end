@@ -50,6 +50,10 @@ export default function GerenciarEletiva() {
         carregarDados();
     }, []);
 
+    useEffect(() => {
+        listarAlunosNaoMatriculados();
+    }, [mostrarOutrasTurmas]);
+
     const buscarDetalhesEletiva = async () => {
         try {
             const { data } = await axios.post('/eletivas/buscar', { instituicao: user.instituicao, codigo: codigoEletiva });
@@ -95,9 +99,28 @@ export default function GerenciarEletiva() {
                 let alunosDisponiveis = alunosNaoMatriculados;
 
                 if (eletiva.exclusiva && !mostrarOutrasTurmas) {
-                    alunosDisponiveis = alunosDisponiveis.filter(aluno =>
-                        aluno.serie === eletiva.serie && aluno.turma === eletiva.turma
-                    );
+                    if (eletiva.series && typeof eletiva.series === 'string') {
+                        // Faz o parse da string JSON para um array
+                        const seriesArray = JSON.parse(eletiva.series);
+
+                        if (Array.isArray(seriesArray) && seriesArray.length > 0) {
+                            // Filtra alunos que pertencem às séries exclusivas, considerando apenas o número da série
+                            alunosDisponiveis = alunosDisponiveis.filter(aluno => {
+                                const serieAluno = aluno.serie.split(' ')[0].trim().toLowerCase(); // Extrai apenas o número da série do aluno
+                                return seriesArray.map(serie => serie.split(' ')[0].trim().toLowerCase()).includes(serieAluno);
+                            });
+                        }
+                    } else if (eletiva.serie && eletiva.turma) {
+                        // Mantém a lógica existente para filtrar por série e turma
+                        alunosDisponiveis = alunosDisponiveis.filter(aluno =>
+                            aluno.serie.split(' ')[0].trim().toLowerCase() === eletiva.serie.split(' ')[0].trim().toLowerCase() &&
+                            aluno.turma.trim().toLowerCase() === eletiva.turma.trim().toLowerCase()
+                        );
+                    }
+                }
+
+                if (mostrarOutrasTurmas) {
+                    alunosDisponiveis = alunosNaoMatriculados;
                 }
 
                 setTodosAlunos(alunosDisponiveis);
@@ -115,21 +138,30 @@ export default function GerenciarEletiva() {
 
     const filtrarLista = (termo, lista) => {
         if (!termo) return lista;
-        const termoLower = termo.toLowerCase();
-        return lista.filter(aluno =>
-            aluno.nome.toLowerCase().includes(termoLower) ||
-            aluno.matricula.toLowerCase().includes(termoLower)
-        ).sort((a, b) => a.nome.localeCompare(b.nome));
+        const termoLower = termo.toLowerCase().replace(/º/g, ''); // Remove o símbolo 'º' do termo de busca
+
+        return lista.filter(aluno => {
+            const nomeMatch = aluno.nome.toLowerCase().includes(termoLower);
+            const matriculaMatch = aluno.matricula.toLowerCase().includes(termoLower);
+
+            // Normaliza a série e a turma, removendo o 'º'
+            const serieTurmaAluno = `${aluno.serie} ${aluno.turma}`.toLowerCase().replace(/º/g, '');
+            const serieTurmaMatch = serieTurmaAluno.includes(termoLower);
+
+            return nomeMatch || matriculaMatch || serieTurmaMatch;
+        }).sort((a, b) => a.nome.localeCompare(b.nome));
     };
 
     const filtrarAlunos = (e) => {
-        setBusca(prev => ({ ...prev, termo: e.target.value }));
-        setAlunosMatriculados(filtrarLista(e.target.value, alunosMatriculadosOriginais));
+        const termo = e.target.value;
+        setBusca(prev => ({ ...prev, termo }));
+        setAlunosMatriculados(filtrarLista(termo, alunosMatriculadosOriginais));
     };
 
     const filtrarAlunosMatricula = (e) => {
-        setBusca(prev => ({ ...prev, termoMatricula: e.target.value }));
-        setTodosAlunos(filtrarLista(e.target.value, todosAlunosOriginais));
+        const termoMatricula = e.target.value;
+        setBusca(prev => ({ ...prev, termoMatricula: termoMatricula }));
+        setTodosAlunos(filtrarLista(termoMatricula, todosAlunosOriginais));
     };
 
     return (
@@ -248,9 +280,21 @@ export default function GerenciarEletiva() {
                                                     <div className="col-md-6 mb-3">
                                                         <h6 className="text-secondary">Alunos</h6>
                                                         <ul className="list-unstyled">
-                                                            <li><b>Total de Alunos:</b> {alunosMatriculados.length}/{eletiva.total_alunos}</li>
-                                                            {eletiva.exclusiva && eletiva.serie && eletiva.turma && (
-                                                                <li><b>Exclusiva para:</b> {eletiva.serie} {eletiva.turma}</li>
+                                                            <li><b>Total de Alunos:</b> {alunosMatriculados.length}/{eletiva.total_alunos || 'N/A'}</li>
+                                                            {eletiva.exclusiva && (
+                                                                <li>
+                                                                    <b>Exclusividade: </b>
+                                                                    {eletiva.series && typeof eletiva.series === 'string' && eletiva.series.trim() !== ''
+                                                                        ? (() => {
+                                                                            try {
+                                                                                const seriesArray = JSON.parse(eletiva.series);
+                                                                                return `${seriesArray.join(', ')}`;
+                                                                            } catch (error) {
+                                                                                return `${eletiva.series}`;
+                                                                            }
+                                                                        })()
+                                                                        : (eletiva.serie && eletiva.turma) ? `${eletiva.serie} ${eletiva.turma}` : 'Não especificada'}
+                                                                </li>
                                                             )}
                                                         </ul>
                                                     </div>
