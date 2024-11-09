@@ -39,7 +39,7 @@ export default function ModalEntrarInstituicao({ user }) {
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                             <button type="submit" className="btn btn-primary" disabled={isLoadingEntrar}>
-                                {isLoadingEntrar ? (<span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>) : ('Entrar')}
+                                {isLoadingEntrar ? (<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>) : ('Entrar')}
                             </button>
                         </div>
                     </form>

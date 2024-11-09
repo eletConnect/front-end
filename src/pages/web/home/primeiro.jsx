@@ -8,7 +8,7 @@ export default function Instituicao() {
 
     return (
         <>
-            <div id="toast-container" className="toast-container position-absolute bottom-0 start-50 translate-middle-x"></div>
+            <div id="toast-container" className="toast-container position-absolute bottom-0 end-0 m-2"></div>
             <Header />
             <main id="main-section">
                 <section id='section'>

@@ -186,7 +186,7 @@ export default function ModalCadastrarInstituicao({ user }) {
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                             <button type="submit" className="btn btn-primary" disabled={isLoadingCadastrar}>
-                                {isLoadingCadastrar ? (<span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>) : ('Cadastrar')}
+                                {isLoadingCadastrar ? (<span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>) : ('Cadastrar')}
                             </button>
 
                         </div>

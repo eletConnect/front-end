@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from '../../../../configs/axios';
 import showToast from '../../../../utills/toasts';
 import supabase from '../../../../configs/supabase';
@@ -14,6 +14,9 @@ export default function SettingsPerfil() {
     const [foto, setFoto] = useState(null);
     const [fotoUrl, setFotoUrl] = useState(user?.foto && user.foto !== 'https://via.placeholder.com/250' ? user.foto : null);
     const [loading, setLoading] = useState(false);
+
+    // Referência para o input de arquivo
+    const inputFileRef = useRef(null);
 
     useEffect(() => {
         if (!user || !user.id) window.location.href = '/verification';
@@ -50,6 +53,10 @@ export default function SettingsPerfil() {
             }
 
             setFotoUrl(null);
+            setFoto(null); // Redefine a variável foto
+            if (inputFileRef.current) {
+                inputFileRef.current.value = ''; // Limpa o input de arquivo
+            }
             sessionStorage.setItem('user', JSON.stringify({ ...user, foto: null }));
             showToast('success', 'Foto removida com sucesso.');
         } catch (error) {
@@ -143,11 +150,10 @@ export default function SettingsPerfil() {
                 <div className='text-end'>
                     <div className="d-flex flex-column align-items-center gap-3">
                         <img width={250} src={fotoUrl || 'https://via.placeholder.com/250'} alt="Foto do usuário" />
-                        <input type="file" onChange={alterarFoto} />
+                        <input type="file" ref={inputFileRef} onChange={alterarFoto} />
                     </div>
                     {fotoUrl && fotoUrl !== 'https://via.placeholder.com/250' && (
                         <p className='m-0'><a href="#" className="pe-auto text-danger" onClick={removerFoto}>Remover foto</a></p>
-
                     )}
                 </div>
                 <div className="vr"></div>

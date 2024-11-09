@@ -90,12 +90,13 @@ export default function Home() {
     return (
         <>
             <Header />
+            <div id="toast-container" className="toast-container position-absolute bottom-0 end-0 m-2"></div>
             <main id="main-section">
                 <section id='section'>
                     <div className="box">
                         <div className="title">
                             <span className="d-flex align-items-center gap-2">
-                                {escola?.logotipo ? (<img className='image-school' width={50} src={escola.logotipo} alt="Logotipo da Escola" />) : null}
+                                {escola?.logotipo ? (<img className='image-school' height={50} src={escola.logotipo} alt="Logotipo da Escola" />) : null}
                                 <h3 className="m-0 fs-4">{escola?.nome || "Instituição"}</h3>
                             </span>
                             <Link className="btn btn-outline-secondary" to="/warnings">
