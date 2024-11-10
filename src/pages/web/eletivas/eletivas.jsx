@@ -118,12 +118,25 @@ export default function Eletiva() {
 
     const handleSelectAll = (e) => {
         if (e.target.checked) {
-            const selecoes = eletivasPaginadas.map((eletiva) => ({ codigo: eletiva.codigo, tipo: eletiva.tipo }));
+            // Seleciona todas as eletivas visíveis na página atual
+            const selecoes = eletivasPaginadas.map((eletiva) => ({
+                codigo: eletiva.codigo,
+                tipo: eletiva.tipo,
+                nome: eletiva.nome,
+            }));
             setEletivasSelecionadas(selecoes);
         } else {
+            // Remove todas as seleções visíveis na página atual
             setEletivasSelecionadas([]);
         }
     };
+
+    // Verificação de todas as eletivas visíveis estarem selecionadas
+    const todasSelecionadas = eletivasPaginadas.length > 0 && eletivasPaginadas.every(
+        (eletiva) => eletivasSelecionadas.some(
+            (sel) => sel.codigo === eletiva.codigo && sel.tipo === eletiva.tipo && sel.nome === eletiva.nome
+        )
+    );
 
     return (
         <>
@@ -177,7 +190,12 @@ export default function Eletiva() {
                                                 <tr>
                                                     <th>
                                                         <span className='form-check m-0'>
-                                                            <input className="form-check-input" type="checkbox" onChange={handleSelectAll} checked={eletivasSelecionadas.length === eletivasPaginadas.length} />
+                                                            <input
+                                                                className="form-check-input"
+                                                                type="checkbox"
+                                                                onChange={handleSelectAll}
+                                                                checked={todasSelecionadas}
+                                                            />
                                                         </span>
                                                     </th>
                                                     {['nome', 'tipo'].map(coluna => (

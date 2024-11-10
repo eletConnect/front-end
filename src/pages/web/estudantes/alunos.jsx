@@ -158,13 +158,13 @@ export default function Alunos() {
 
         return alunosPaginados.map((aluno) => (
             <tr key={aluno.matricula}>
-                <td>
+                <td className='align-middle'> 
                     <input type="checkbox" checked={alunosSelecionados.includes(aluno.matricula)} onChange={() => toggleSelecionarAluno(aluno.matricula)} />
                 </td>
-                <td>{aluno.matricula}</td>
-                <td>{aluno.nome}</td>
-                <td>{`${aluno.serie} ${aluno.turma}`}</td>
-                <td>
+                <td className='align-middle'>{aluno.matricula}</td>
+                <td className='align-middle'>{aluno.nome}</td>
+                <td className='align-middle'>{`${aluno.serie} ${aluno.turma}`}</td>
+                <td className='align-middle'>
                     {aluno.eletivas && aluno.eletivas.length > 0 ? (
                         aluno.eletivas.map((eletiva, index) => (
                             <span key={`${aluno.matricula}-${index}`} className={`badge ${obterClasseBadge(eletiva.tipo)} me-1`}>

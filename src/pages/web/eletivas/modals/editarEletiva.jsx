@@ -41,14 +41,8 @@ export default function ModalEditarEletiva({ codigo, instituicao }) {
         setCarregando(true);
         try {
             const response = await axios.post('/eletivas/buscar', { codigo, instituicao });
-
-            // Log detalhado da resposta da API
-            console.log('Resposta da API:', response);
-
             if (response.status === 200 && response.data.length > 0) {
                 const dadosEletiva = response.data[0];
-                console.log('Dados da eletiva:', dadosEletiva);
-
                 setEletiva({
                     nome: dadosEletiva.nome || '',
                     tipo: dadosEletiva.tipo || '',

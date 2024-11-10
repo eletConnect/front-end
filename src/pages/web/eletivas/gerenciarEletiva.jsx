@@ -125,9 +125,7 @@ export default function GerenciarEletiva() {
 
                 setTodosAlunos(alunosDisponiveis);
                 setTodosAlunosOriginais(alunosDisponiveis);
-            } else {
-                showToast('warning', 'Nenhum aluno disponível para matrícula.');
-            }
+            } 
         } catch (error) {
             console.error('Erro ao listar alunos não matriculados:', error);
             showToast('danger', error.response?.data?.mensagem || 'Erro ao listar alunos não matriculados.');
