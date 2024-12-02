@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from '../../../configs/axios';
 
+import ModalTermos from '../../../configs/termos';
+
 import logo from '../../../assets/images/logo/azul.png';
 import imgLogin from '../../../assets/images/web/Computer login-cuate.png';
 
@@ -58,11 +60,11 @@ export default function Login() {
                             </p>
                         </div>
                         <div className="form-floating mb-3">
-                            <input type="email"className="form-control" placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                            <input type="email" className="form-control" placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} required />
                             <label>E-mail</label>
                         </div>
                         <div className="form-floating">
-                            <input type="password" className="form-control" placeholder="Senha" value={senha} onChange={(e) => setSenha(e.target.value)} required/>
+                            <input type="password" className="form-control" placeholder="Senha" value={senha} onChange={(e) => setSenha(e.target.value)} required />
                             <label>Senha</label>
                             <p className="pt-1">
                                 Esqueceu sua senha? <Link to="/forgot-password">Redefinir senha.</Link>
@@ -76,11 +78,10 @@ export default function Login() {
                     </form>
                 </div>
                 <div className="mb-4 text-center">
-                    <p className="m-0 px-5">
-                        Ao continuar, você concorda em cumprir os <Link to="#">Termos de Serviço</Link> da eletConnect e a nossa <Link to="#">Política de Privacidade</Link>.
-                    </p>
+                    <ModalTermos />
                 </div>
             </div>
         </div>
     );
+
 }

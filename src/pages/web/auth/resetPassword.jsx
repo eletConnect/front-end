@@ -3,6 +3,8 @@ import axios from '../../../configs/axios';
 import React, { useState } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 
+import ModalTermos from '../../../configs/termos';
+
 import logo from '../../../assets/images/logo/azul.png';
 import imgReset from '../../../assets/images/web/Reset password-cuate.png';
 
@@ -96,9 +98,7 @@ export default function ResetPassword() {
                     </form>
                 </div>
                 <div className="mb-4 text-center">
-                    <p className="m-0 px-5">
-                        Ao continuar, você concorda em cumprir os <Link to="#">Termos de Serviço</Link> da eletConnect e a nossa <Link to="#">Política de Privacidade</Link>.
-                    </p>
+                    <ModalTermos />
                 </div>
             </div>
         </div>
