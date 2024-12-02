@@ -43,15 +43,7 @@ export default function ForgotPassword() {
                 </div>
                 <form onSubmit={solicitarRedefinicao}>
                     <div className="form-floating mb-3">
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="inputMatricula"
-                            placeholder="Matrícula"
-                            value={matricula}
-                            onChange={(e) => setMatricula(e.target.value)}
-                            required
-                        />
+                        <input type="text" className="form-control" id="inputMatricula" placeholder="Matrícula" value={matricula} onChange={(e) => setMatricula(e.target.value)} required />
                         <label htmlFor="inputMatricula">Matrícula</label>
                     </div>
                     <button className="btn btn-primary w-100 p-2" type="submit" disabled={carregando}>

@@ -27,12 +27,11 @@ export default function Eletiva() {
     }, []);
 
     useEffect(() => {
-        // Verifica se há uma mensagem de sucesso armazenada no sessionStorage
         const mensagem = sessionStorage.getItem('mensagemSucesso');
         if (mensagem) {
             setMensagemSucesso(mensagem);
-            showToast('success', mensagem); // Exibe a mensagem com um toast
-            sessionStorage.removeItem('mensagemSucesso'); // Remove a mensagem após exibir
+            showToast('success', mensagem); 
+            sessionStorage.removeItem('mensagemSucesso');
         }
     }, []);
 
@@ -105,12 +104,10 @@ export default function Eletiva() {
         const isSelected = eletivasSelecionadas.some(sel => sel.codigo === codigo && sel.tipo === tipo && sel.nome === nome);
 
         if (isSelected) {
-            // Remove a eletiva da lista de selecionadas
             setEletivasSelecionadas(prev =>
                 prev.filter(sel => !(sel.codigo === codigo && sel.tipo === tipo && sel.nome === nome))
             );
         } else {
-            // Adiciona a eletiva à lista de selecionadas
             setEletivasSelecionadas(prev => [...prev, { codigo, tipo, nome }]);
         }
     };
@@ -118,7 +115,6 @@ export default function Eletiva() {
 
     const handleSelectAll = (e) => {
         if (e.target.checked) {
-            // Seleciona todas as eletivas visíveis na página atual
             const selecoes = eletivasPaginadas.map((eletiva) => ({
                 codigo: eletiva.codigo,
                 tipo: eletiva.tipo,
@@ -126,12 +122,10 @@ export default function Eletiva() {
             }));
             setEletivasSelecionadas(selecoes);
         } else {
-            // Remove todas as seleções visíveis na página atual
             setEletivasSelecionadas([]);
         }
     };
 
-    // Verificação de todas as eletivas visíveis estarem selecionadas
     const todasSelecionadas = eletivasPaginadas.length > 0 && eletivasPaginadas.every(
         (eletiva) => eletivasSelecionadas.some(
             (sel) => sel.codigo === eletiva.codigo && sel.tipo === eletiva.tipo && sel.nome === eletiva.nome

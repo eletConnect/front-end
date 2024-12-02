@@ -10,7 +10,7 @@ export default function ModalExcluirSelecionados({ alunosSelecionados, escola, a
     setEnviando(true);
 
     try {
-      const matriculas = alunosSelecionados.map((matricula) => matricula); // Coletando as matrículas dos alunos selecionados
+      const matriculas = alunosSelecionados.map((matricula) => matricula); 
       const resposta = await axios.post('/estudantes/excluir-multiplos', {
         matriculas,
         instituicao: escola.cnpj
@@ -18,7 +18,7 @@ export default function ModalExcluirSelecionados({ alunosSelecionados, escola, a
 
       if (resposta.status === 200) {
         sessionStorage.setItem('mensagemSucesso', resposta.data.mensagem);
-        window.location.reload(); // Recarregar a página para aplicar a alteração
+        window.location.reload(); 
       }
     } catch (error) {
       showToast('danger', error.response?.data.mensagem || 'Erro ao excluir alunos selecionados.');

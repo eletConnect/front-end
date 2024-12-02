@@ -100,18 +100,15 @@ export default function GerenciarEletiva() {
 
                 if (eletiva.exclusiva && !mostrarOutrasTurmas) {
                     if (eletiva.series && typeof eletiva.series === 'string') {
-                        // Faz o parse da string JSON para um array
                         const seriesArray = JSON.parse(eletiva.series);
 
                         if (Array.isArray(seriesArray) && seriesArray.length > 0) {
-                            // Filtra alunos que pertencem às séries exclusivas, considerando apenas o número da série
                             alunosDisponiveis = alunosDisponiveis.filter(aluno => {
-                                const serieAluno = aluno.serie.split(' ')[0].trim().toLowerCase(); // Extrai apenas o número da série do aluno
+                                const serieAluno = aluno.serie.split(' ')[0].trim().toLowerCase(); 
                                 return seriesArray.map(serie => serie.split(' ')[0].trim().toLowerCase()).includes(serieAluno);
                             });
                         }
                     } else if (eletiva.serie && eletiva.turma) {
-                        // Mantém a lógica existente para filtrar por série e turma
                         alunosDisponiveis = alunosDisponiveis.filter(aluno =>
                             aluno.serie.split(' ')[0].trim().toLowerCase() === eletiva.serie.split(' ')[0].trim().toLowerCase() &&
                             aluno.turma.trim().toLowerCase() === eletiva.turma.trim().toLowerCase()
@@ -136,13 +133,13 @@ export default function GerenciarEletiva() {
 
     const filtrarLista = (termo, lista) => {
         if (!termo) return lista;
-        const termoLower = termo.toLowerCase().replace(/º/g, ''); // Remove o símbolo 'º' do termo de busca
+        const termoLower = termo.toLowerCase().replace(/º/g, ''); 
 
         return lista.filter(aluno => {
             const nomeMatch = aluno.nome.toLowerCase().includes(termoLower);
             const matriculaMatch = aluno.matricula.toLowerCase().includes(termoLower);
 
-            // Normaliza a série e a turma, removendo o 'º'
+
             const serieTurmaAluno = `${aluno.serie} ${aluno.turma}`.toLowerCase().replace(/º/g, '');
             const serieTurmaMatch = serieTurmaAluno.includes(termoLower);
 
@@ -311,7 +308,6 @@ export default function GerenciarEletiva() {
 
             <ModalDesmatricularAluno eletiva={eletiva} alunoSelecionado={alunoSelecionado} setAlunoSelecionado={setAlunoSelecionado} alunosMatriculados={alunosMatriculados} setAlunosMatriculados={setAlunosMatriculados} />
 
-            {/* Modal: Gerar lista de chamada */}
             <div className="modal fade" id="gerarLista" tabIndex="-1" aria-labelledby="gerarListaLabel" aria-hidden="true">
                 <div className="modal-dialog modal-xl modal-dialog-scrollable">
                     <div className="modal-content">
@@ -327,7 +323,6 @@ export default function GerenciarEletiva() {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            {/* Componente ListaChamada Renderizado dentro do Modal */}
                             <ChamadaComImpressao />
                         </div>
                     </div>
@@ -336,7 +331,6 @@ export default function GerenciarEletiva() {
 
             <ModalEditarEletiva codigo={eletiva.codigo} instituicao={user.instituicao} />
             <ModalExcluirEletiva codigo={eletiva.codigo} tipo={eletiva.tipo} instituicao={user.instituicao} />
-
         </>
     );
 }

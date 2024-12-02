@@ -17,17 +17,14 @@ export default function ModalMatricularAluno({
     filtrarAlunosMatricula,
     setMostrarOutrasTurmas
 }) {
-    const [enviando, setEnviando] = useState(false); // Estado para controle do loading
-
-
-    // Função para realizar a matrícula
+    const [enviando, setEnviando] = useState(false); 
     const matricularAlunos = async () => {
         if (!eletiva || alunosSelecionados.length === 0) {
             showToast('warning', 'É necessário selecionar pelo menos um aluno.');
             return;
         }
 
-        setEnviando(true); // Ativa o estado de envio (loading)
+        setEnviando(true);
 
         try {
             const resposta = await axios.post('/eletivas/matricular-multiplos', {
@@ -39,12 +36,12 @@ export default function ModalMatricularAluno({
 
             if (resposta.status === 201) {
                 sessionStorage.setItem('mensagemSucesso', `${alunosSelecionados.length} aluno(s) foram matriculados com sucesso.`);
-                window.location.reload(); // Recarrega a página para refletir as mudanças
+                window.location.reload(); 
             }
         } catch (error) {
             showToast('danger', error.response?.data?.mensagem || 'Erro ao matricular alunos.');
         } finally {
-            setEnviando(false); // Desativa o loading após a operação
+            setEnviando(false);
         }
     };
 

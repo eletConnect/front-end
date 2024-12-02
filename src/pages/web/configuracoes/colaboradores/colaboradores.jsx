@@ -24,11 +24,10 @@ export default function Colaboradores() {
     useEffect(() => {
         listarColaboradores();
 
-        // Verificar se há uma mensagem de sucesso no sessionStorage e exibi-la
         const mensagemSucesso = sessionStorage.getItem('mensagemSucesso');
         if (mensagemSucesso) {
-            showToast('success', mensagemSucesso);  // Exibe o toast com a mensagem de sucesso
-            sessionStorage.removeItem('mensagemSucesso');  // Remove a mensagem após exibir
+            showToast('success', mensagemSucesso); 
+            sessionStorage.removeItem('mensagemSucesso'); 
         }
     }, []);
 
@@ -309,7 +308,6 @@ export default function Colaboradores() {
                 </section>
             </main>
 
-            {/* Modais */}
             <CadastrarColaboradorModal listarColaboradores={listarColaboradores} instituicao={escola.cnpj} />
             <EditarColaboradorModal matricula={matriculaParaEditar} listarColaboradores={listarColaboradores} instituicao={escola.cnpj} />
             <ExcluirColaboradorModal nome={nomeParaExcluir} matricula={matriculaParaExcluir} listarColaboradores={listarColaboradores} instituicao={escola.cnpj} />

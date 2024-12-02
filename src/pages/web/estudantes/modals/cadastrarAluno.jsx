@@ -23,7 +23,7 @@ export default function ModalCadastrarAluno({ escola }) {
       });
       if (resposta.status === 201) {
         sessionStorage.setItem('mensagemSucesso', resposta.data.mensagem);
-        window.location.reload(); // Recarregar a página para aplicar a alteração
+        window.location.reload(); 
       }
     } catch (erro) {
       showToast('danger', erro.response?.data.mensagem || 'Erro ao cadastrar o aluno');
@@ -50,7 +50,6 @@ export default function ModalCadastrarAluno({ escola }) {
           <form onSubmit={cadastrarAluno}>
             <div className="modal-body">
               <div className="row g-3">
-                {/* Matrícula */}
                 <div className="col-md-3">
                   <label htmlFor="matricula" className="form-label">
                     Matrícula <span className="text-danger">*</span>
@@ -62,11 +61,10 @@ export default function ModalCadastrarAluno({ escola }) {
                     value={matricula}
                     onChange={(e) => setMatricula(e.target.value)}
                     maxLength="11"
-                    pattern="\d+" // Aceita apenas números
+                    pattern="\d+" 
                     title="Somente números são permitidos"
                     required
                   />
-                  {/* Verifica se o comprimento da matrícula excede o limite */}
                   {matricula.length > 10 && (
                     <div className="text-danger mt-1">
                       <small>A matrícula não pode ultrapassar 10 caracteres.</small>
@@ -74,7 +72,6 @@ export default function ModalCadastrarAluno({ escola }) {
                   )}
                 </div>
 
-                {/* Nome completo */}
                 <div className="col-md-9">
                   <label htmlFor="nome" className="form-label">
                     Nome completo <span className="text-danger">*</span>
@@ -85,12 +82,11 @@ export default function ModalCadastrarAluno({ escola }) {
                     id="nome"
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
-                    pattern="[A-Za-zÀ-ÿ\s]+" // Aceita letras com acentos e espaços
-                    maxLength="76" // Limite de 60 caracteres
+                    pattern="[A-Za-zÀ-ÿ\s]+"
+                    maxLength="76" 
                     title="Apenas letras e espaços são permitidos"
                     required
                   />
-                  {/* Verifica se o comprimento do nome excede o limite */}
                   {nome.length > 75 && (
                     <div className="text-danger mt-1">
                       <small>O nome não pode ultrapassar 75 caracteres.</small>
@@ -98,7 +94,6 @@ export default function ModalCadastrarAluno({ escola }) {
                   )}
                 </div>
 
-                {/* Série */}
                 <div className="col-md-6">
                   <label htmlFor="serie" className="form-label">
                     Série <span className="text-danger">*</span>
@@ -131,7 +126,7 @@ export default function ModalCadastrarAluno({ escola }) {
                   >
                     <option value="">Selecione...</option>
                     {[...Array(26)].map((_, i) => {
-                      const turmaLetra = String.fromCharCode(65 + i); // Turmas de 'A' a 'Z'
+                      const turmaLetra = String.fromCharCode(65 + i); 
                       return (
                         <option key={turmaLetra} value={turmaLetra}>
                           {turmaLetra}

@@ -15,7 +15,7 @@ export default function ModalEditarEletiva({ codigo, instituicao }) {
         serie: '',
         turma: '',
         status: 'Ativo',
-        series: '', // Adicionado para múltiplas séries
+        series: '', 
     });
     const [isExclusiva, setIsExclusiva] = useState(false);
     const [exclusividade, setExclusividade] = useState('');
@@ -23,8 +23,7 @@ export default function ModalEditarEletiva({ codigo, instituicao }) {
     const [enviando, setEnviando] = useState(false);
 
     const seriesOpcoes = ['1º ano', '2º ano', '3º ano'];
-    const turmasOpcoes = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i)); // Gera A-Z
-
+    const turmasOpcoes = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i)); 
     useEffect(() => {
         const mensagemSucesso = sessionStorage.getItem('mensagemSucesso');
         if (mensagemSucesso) {
@@ -58,7 +57,6 @@ export default function ModalEditarEletiva({ codigo, instituicao }) {
                     series: dadosEletiva.series || ''
                 });
 
-                // Define exclusividade com base nos dados recebidos
                 setIsExclusiva(!!(dadosEletiva.series?.length || dadosEletiva.serie || dadosEletiva.turma));
                 if (dadosEletiva.series && dadosEletiva.series.length > 0) {
                     setExclusividade('serie');

@@ -14,7 +14,7 @@ export default function ModalRedefinirSenha({ alunoSelecionado }) {
 
       if (resposta.status === 200) {
         sessionStorage.setItem('mensagemSucesso', resposta.data.mensagem);
-        window.location.reload(); // Recarregar a página para aplicar a alteração
+        window.location.reload();
       }
     } catch (error) {
       showToast('danger', error.response?.data.mensagem || 'Erro ao redefinir a senha do aluno.');

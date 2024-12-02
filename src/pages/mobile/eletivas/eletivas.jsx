@@ -164,7 +164,7 @@ export default function MHome() {
             });
             if (response.status === 201) {
                 showToast('success', 'Matrícula realizada com sucesso!');
-                listarMinhasEletivas(); // Atualiza a lista após a matrícula
+                listarMinhasEletivas();
             } else {
                 throw new Error('Falha ao realizar matrícula.');
             }
@@ -183,7 +183,7 @@ export default function MHome() {
             });
             if (response.status === 200) {
                 showToast('success', 'Desmatrícula realizada com sucesso!');
-                listarMinhasEletivas(); // Atualiza a lista após a desmatrícula
+                listarMinhasEletivas();
             } else {
                 throw new Error('Falha ao realizar desmatrícula.');
             }
@@ -230,14 +230,7 @@ export default function MHome() {
                             <div className="btn-group btn-group-sm" role="group">
                                 {DAY_OPTIONS.map((dia, index) => (
                                     <React.Fragment key={dia}>
-                                        <input
-                                            type="checkbox"
-                                            className="btn-check"
-                                            id={`btncheck${index + 1}`}
-                                            autoComplete="off"
-                                            checked={filtroDia.includes(dia)}
-                                            onChange={() => handleDiaChange(dia)}
-                                        />
+                                        <input type="checkbox" className="btn-check" id={`btncheck${index + 1}`} autoComplete="off" checked={filtroDia.includes(dia)} onChange={() => handleDiaChange(dia)} />
                                         <label className="btn btn-outline-secondary" htmlFor={`btncheck${index + 1}`}>{dia}</label>
                                     </React.Fragment>
                                 ))}
@@ -245,14 +238,7 @@ export default function MHome() {
                             <div className="btn-group btn-group-sm d-flex" role="group"  >
                                 {TIME_OPTIONS.map((horario, index) => (
                                     <React.Fragment key={horario}>
-                                        <input
-                                            type="radio"
-                                            className="btn-check"
-                                            id={`btncheck${index + 3}`}
-                                            autoComplete="off"
-                                            checked={filtroHorario === horario}
-                                            onChange={() => handleHorarioChange(horario)}
-                                        />
+                                        <input type="radio" className="btn-check" id={`btncheck${index + 3}`} autoComplete="off" checked={filtroHorario === horario} onChange={() => handleHorarioChange(horario)} />
                                         <label className="btn btn-outline-secondary m-0" htmlFor={`btncheck${index + 3}`}>{horario}</label>
                                     </React.Fragment>
                                 ))}
@@ -267,14 +253,7 @@ export default function MHome() {
                                 eletivasFiltradas.map(eletiva => (
                                     <div className="accordion-item" key={eletiva.id}>
                                         <h2 className="accordion-header">
-                                            <button
-                                                className="accordion-button collapsed"
-                                                type="button"
-                                                data-bs-toggle="collapse"
-                                                data-bs-target={`#flush-collapse${eletiva.id}`}
-                                                aria-expanded="false"
-                                                aria-controls={`flush-collapse${eletiva.id}`}
-                                            >
+                                            <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={`#flush-collapse${eletiva.id}`} aria-expanded="false" aria-controls={`flush-collapse${eletiva.id}`} >
                                                 <div className='d-flex flex-column w-100'>
                                                     <span className='d-flex flex-column mb-3'>
                                                         <h4 className='m-0'>{eletiva.nome}</h4>
@@ -288,28 +267,16 @@ export default function MHome() {
                                                 </div>
                                             </button>
                                         </h2>
-                                        <div
-                                            id={`flush-collapse${eletiva.id}`}
-                                            className="accordion-collapse collapse"
-                                            data-bs-parent="#accordionFlushExample"
-                                        >
+                                        <div id={`flush-collapse${eletiva.id}`} className="accordion-collapse collapse" data-bs-parent="#accordionFlushExample" >
                                             <div className="accordion-body">
                                                 {eletiva.descricao}
                                                 <div className='text-end'>
                                                     {eletiva.matriculado ? (
-                                                        <button
-                                                            className='btn btn-danger'
-                                                            onClick={() => desmatricularEletiva(eletiva.codigo)}
-                                                            disabled={inscricoesEncerradas}
-                                                        >
+                                                        <button className='btn btn-danger' onClick={() => desmatricularEletiva(eletiva.codigo)} disabled={inscricoesEncerradas} >
                                                             {inscricoesEncerradas ? 'Período Encerrado' : 'Desmatricular'}
                                                         </button>
                                                     ) : (
-                                                        <button
-                                                            className='btn btn-success'
-                                                            onClick={() => matricularEletiva(eletiva.codigo)}
-                                                            disabled={inscricoesEncerradas}
-                                                        >
+                                                        <button className='btn btn-success' onClick={() => matricularEletiva(eletiva.codigo)} disabled={inscricoesEncerradas} >
                                                             {inscricoesEncerradas ? 'Período Encerrado' : 'Matricular'}
                                                         </button>
                                                     )}

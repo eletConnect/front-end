@@ -101,15 +101,11 @@ export default function ModalCadastrarInstituicao({ user }) {
                     <form onSubmit={cadastrarInstituicao}>
                         <div className="modal-body">
                             <div className="d-flex gap-4">
-                                {/* Seção da Logo */}
                                 <div className="d-flex flex-column align-items-center gap-3">
                                     <img width={250} src={logo ? URL.createObjectURL(logo) : 'https://via.placeholder.com/250'} alt="Logo da instituição" />
                                     <input type="file" className="form-control" onChange={(e) => setLogo(e.target.files[0])} />
                                 </div>
-
                                 <div className="vr"></div>
-
-                                {/* Seção do Formulário */}
                                 <div className="w-100">
                                     <div className="row g-3">
                                         <div className="col-md-6">

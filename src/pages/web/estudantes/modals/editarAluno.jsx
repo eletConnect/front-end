@@ -16,7 +16,6 @@ export default function ModalEditarAluno({ alunoSelecionado, escola }) {
   const [carregando, setCarregando] = useState(false);
   const [enviando, setEnviando] = useState(false);
 
-  // Função para carregar os dados do aluno quando o alunoSelecionado mudar
   useEffect(() => {
     if (alunoSelecionado) {
       setDadosAluno({
@@ -49,7 +48,7 @@ export default function ModalEditarAluno({ alunoSelecionado, escola }) {
 
       if (resposta.status === 200) {
         sessionStorage.setItem('mensagemSucesso', 'O cadastro do aluno foi atualizado com sucesso.');
-        window.location.reload(); // Recarregar a página para aplicar a alteração
+        window.location.reload(); 
       }
     } catch (error) {
       showToast('danger', error.response?.data.mensagem || 'Erro ao editar o aluno.');
@@ -83,7 +82,6 @@ export default function ModalEditarAluno({ alunoSelecionado, escola }) {
                 </div>
               ) : (
                 <div className="row g-3">
-                  {/* Matrícula */}
                   <div className="col-md-3">
                     <label htmlFor="matricula" className="form-label">
                       Matrícula <span className="text-danger">*</span>
@@ -94,11 +92,10 @@ export default function ModalEditarAluno({ alunoSelecionado, escola }) {
                       id="matricula"
                       value={dadosAluno.matricula}
                       onChange={(e) => setDadosAluno({ ...dadosAluno, matricula: e.target.value })}
-                      pattern="\d+" // Aceita apenas números
+                      pattern="\d+"
                       maxLength="11"
                       required
                     />
-                    {/* Verifica se o comprimento da matrícula excede o limite */}
                     {dadosAluno.matricula.length > 10 && (
                       <div className="text-danger mt-1">
                         <small>A matrícula não pode ultrapassar 10 caracteres.</small>
@@ -106,7 +103,6 @@ export default function ModalEditarAluno({ alunoSelecionado, escola }) {
                     )}
                   </div>
 
-                  {/* Série */}
                   <div className="col-md-3">
                     <label htmlFor="serie" className="form-label">
                       Série <span className="text-danger">*</span>
@@ -126,7 +122,6 @@ export default function ModalEditarAluno({ alunoSelecionado, escola }) {
                     </select>
                   </div>
 
-                  {/* Turma */}
                   <div className="col-md-3">
                     <label htmlFor="turma" className="form-label">
                       Turma <span className="text-danger">*</span>
@@ -140,13 +135,12 @@ export default function ModalEditarAluno({ alunoSelecionado, escola }) {
                     >
                       <option value="" disabled>Selecione...</option>
                       {[...Array(26)].map((_, i) => {
-                        const turma = String.fromCharCode(65 + i); // Gera opções de 'A' a 'Z'
+                        const turma = String.fromCharCode(65 + i);
                         return <option key={turma} value={turma}>{turma}</option>;
                       })}
                     </select>
                   </div>
 
-                  {/* Status */}
                   <div className="col-md-3">
                     <label htmlFor="status" className="form-label">Status</label>
                     <select
@@ -161,7 +155,6 @@ export default function ModalEditarAluno({ alunoSelecionado, escola }) {
                     </select>
                   </div>
 
-                  {/* Nome completo */}
                   <div className="col-md-6">
                     <label htmlFor="nomeCompleto" className="form-label">
                       Nome completo <span className="text-danger">*</span>
@@ -175,7 +168,6 @@ export default function ModalEditarAluno({ alunoSelecionado, escola }) {
                       maxLength="75"
                       required
                     />
-                    {/* Verifica se o comprimento do nome excede o limite */}
                     {dadosAluno.nome.length > 76 && (
                       <div className="text-danger mt-1">
                         <small>O nome não pode ultrapassar 75 caracteres.</small>
@@ -183,7 +175,6 @@ export default function ModalEditarAluno({ alunoSelecionado, escola }) {
                     )}
                   </div>
 
-                  {/* E-mail */}
                   <div className="col-md-6">
                     <label htmlFor="email" className="form-label">E-mail</label>
                     <input
@@ -195,7 +186,7 @@ export default function ModalEditarAluno({ alunoSelecionado, escola }) {
                       maxLength="101"
                       placeholder="email@exemplo.com"
                     />
-                    {/* Verifica se o comprimento do e-mail excede o limite */}
+
                     {dadosAluno.email.length > 101 && (
                       <div className="text-danger mt-1">
                         <small>O e-mail não pode ultrapassar 100 caracteres.</small>
@@ -206,7 +197,6 @@ export default function ModalEditarAluno({ alunoSelecionado, escola }) {
               )}
             </div>
 
-            {/* Footer com botões */}
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
               <button type="submit" className="btn btn-success" disabled={enviando || carregando}>

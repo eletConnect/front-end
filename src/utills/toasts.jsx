@@ -5,7 +5,6 @@ export default function showToast(type, message, duration = 4000) {
         return;
     }
 
-    // Cria um novo elemento de toast
     const toastElement = document.createElement('div');
     toastElement.classList.add('toast');
     toastElement.classList.add('align-items-center');
@@ -16,7 +15,6 @@ export default function showToast(type, message, duration = 4000) {
     toastElement.setAttribute('aria-live', 'assertive');
     toastElement.setAttribute('aria-atomic', 'true');
 
-    // Define o conteúdo do toast
     toastElement.innerHTML = `
         <div class="d-flex">
             <div class="toast-body">
@@ -26,17 +24,15 @@ export default function showToast(type, message, duration = 4000) {
         </div>
     `;
 
-    // Adiciona o toast ao container
     toastContainer.appendChild(toastElement);
     setTimeout(() => {
         toastElement.classList.add('show');
     }, 100);
 
-    // Define um timeout para remover automaticamente o toast após o tempo especificado
     setTimeout(() => {
         toastElement.classList.remove('show');
         setTimeout(() => {
             toastContainer.removeChild(toastElement);
-        }, 400); // Tempo para coincidir com a duração da transição CSS
+        }, 400); 
     }, duration);
 }

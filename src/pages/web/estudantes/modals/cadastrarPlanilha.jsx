@@ -49,12 +49,12 @@ export default function ModalCadastrarPlanilha({ escola }) {
             const arrayBuffer = e.target.result;
             await workbook.xlsx.load(arrayBuffer);
 
-            const worksheet = workbook.worksheets[0]; // Obtém a primeira aba da planilha
+            const worksheet = workbook.worksheets[0]; 
             const headers = worksheet.getRow(1).values.slice(1).map(header => header.toString().trim().toLowerCase());
 
             const normalizedData = [];
             worksheet.eachRow((row, rowNumber) => {
-                if (rowNumber > 1) { // Ignora o cabeçalho
+                if (rowNumber > 1) {
                     const normalizedRow = {};
                     row.values.slice(1).forEach((value, index) => {
                         normalizedRow[headers[index]] = value;
@@ -128,7 +128,6 @@ export default function ModalCadastrarPlanilha({ escola }) {
             }
         };
 
-        // Cabeçalho do PDF
         currentPage.drawText('Relatório de Erros de Validação', {
             x: pageMargin,
             y: yPosition,
@@ -137,7 +136,6 @@ export default function ModalCadastrarPlanilha({ escola }) {
             color: rgb(0, 0, 0.8),
         });
 
-        // Data atual
         currentPage.drawText(`Data: ${new Date().toLocaleDateString('pt-BR')}`, {
             x: currentPage.getWidth() - pageMargin - 100,
             y: yPosition,
@@ -184,7 +182,6 @@ export default function ModalCadastrarPlanilha({ escola }) {
             });
         }
 
-        // Salva o PDF e faz o download
         const pdfBytes = await doc.save();
         const link = document.createElement('a');
         link.href = URL.createObjectURL(new Blob([pdfBytes], { type: 'application/pdf' }));
@@ -277,7 +274,6 @@ export default function ModalCadastrarPlanilha({ escola }) {
                 </div>
             </div>
 
-            {/* Modal: Confirmar Cadastro via Planilha */}
             <div className="modal fade" id="confirmarCadastro" tabIndex="-1" aria-labelledby="confirmarCadastroLabel" aria-hidden="true">
                 <div className={`modal-dialog ${erros && Object.keys(erros).length > 0 ? 'modal-lg modal-dialog-scrollable' : ''}`}>
                     <div className="modal-content">
@@ -315,7 +311,6 @@ export default function ModalCadastrarPlanilha({ escola }) {
                             )}
                         </div>
                         <div className="modal-footer d-flex justify-content-between">
-                            {/* Se houver erros, exibe o botão de download, senão ocupa espaço com um span invisível */}
                             {Object.keys(erros).length > 0 ? (
                                 <button type="button" className="btn btn-danger" onClick={gerarPDF} title='Baixar arquivo PDF'>
                                     <i className="bi bi-file-arrow-down"></i>&ensp;Relatório de Erros - (PDF)
@@ -329,7 +324,6 @@ export default function ModalCadastrarPlanilha({ escola }) {
                                     Cancelar
                                 </button>
 
-                                {/* Renderizar o botão de cadastrar somente se não houver erros */}
                                 {Object.keys(erros).length === 0 && (
                                     <button className="btn btn-primary" onClick={cadastrarPlanilha} disabled={enviando}>
                                         {enviando ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> : <><i className="bi bi-person-add"></i>&ensp;Cadastrar</>}
@@ -341,7 +335,6 @@ export default function ModalCadastrarPlanilha({ escola }) {
                 </div>
             </div>
 
-            {/* Barra de progresso customizada */}
             {enviando && (
                 <div className="progress mt-3" style={{ height: '25px' }}>
                     <div

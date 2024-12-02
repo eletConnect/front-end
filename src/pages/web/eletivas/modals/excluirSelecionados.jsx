@@ -5,10 +5,9 @@ import showToast from '../../../../utills/toasts';
 export default function ModalExcluirSelecionados({ eletivasSelecionadas, carregarEletivas, usuario }) {
     const [loading, setLoading] = useState(false);
 
-    // Função para excluir eletivas selecionadas
     const excluirSelecionadas = async (e) => {
         e.preventDefault();
-        setLoading(true); // Ativa o estado de carregamento
+        setLoading(true); 
         try {
             const resposta = await axios.post('/eletivas/excluir-multiplas', {
                 eletivas: eletivasSelecionadas,
@@ -26,7 +25,6 @@ export default function ModalExcluirSelecionados({ eletivasSelecionadas, carrega
         }
     };
 
-    // Função para retornar os nomes das eletivas selecionadas
     const getNomesEletivasSelecionadas = () => {
         return eletivasSelecionadas.length > 0 ? eletivasSelecionadas.map((eletiva) => {
             return eletiva.nome || 'Nome não disponível';
@@ -50,7 +48,7 @@ export default function ModalExcluirSelecionados({ eletivasSelecionadas, carrega
                     </div>
                     <div className="modal-body">
                         <p>Tem certeza que deseja excluir as eletivas selecionadas?</p>
-                        <p><b>Eletivas selecionadas: </b>{getNomesEletivasSelecionadas()}</p> {/* Exibe os nomes das eletivas */}
+                        <p><b>Eletivas selecionadas: </b>{getNomesEletivasSelecionadas()}</p>
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>

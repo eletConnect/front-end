@@ -69,7 +69,7 @@ export default function LandingPage() {
                         </ul>
                         <div className='d-flex align-items-center gap-2'>
                             <a className="btn btn-primary" href="/m/login" title='Área do aluno'>
-                                <i className="bi bi-person"></i>&ensp;Sou aluno
+                                <i className="bi bi-person"></i>{!isMobile ? <>&ensp;Sou aluno</> : null}
                             </a>
                             {!isMobile && (
                                 <a className="btn btn-primary" href="/login" title="Acesso restrito">
@@ -82,29 +82,29 @@ export default function LandingPage() {
             </nav>
 
             <main>
-                {/* Seção Principal */}
                 <section id='painel'>
-                    <div id='painel-text' className="row text-white">
-                        <div className="col-md-6">
+                    <div id='painel-text' className={isMobile ? "d-flex align-items-center text-white text-center" : "row text-white"}>
+                        <div className="col-md-8">
                             <h1 className="fw-bold">Simplificando a gestão de disciplinas eletivas!</h1>
-                            <p className="fs-5">A eletConnect é uma plataforma intuitiva que transforma a gestão de disciplinas eletivas.</p>
+                            <p className="fs-5">O eletConnect facilita a inscrição de alunos em disciplinas eletivas, permitindo escolhas rápidas pelo celular ou computador. Para gestores, oferece ferramentas para organizar turmas, horários e exclusividades, além de acompanhar matrículas em tempo real e gerar relatórios, otimizando a gestão escolar.</p>
                             <a className="btn btn-primary" href={isMobile ? "/m/login" : "/login"}>Começar</a>
                         </div>
-                        <div className="col-md-6 text-center robot">
+                        <div className="col-md-4 text-center">
                             <img src={imgSelect} width={350} alt="Imagem de transformação digital" />
                         </div>
-                        <div id='scroll-etapa' className="d-flex gap-2 overflow-x-scroll">
-                            {etapas.map(etapa => (
-                                <div key={etapa.id} className={`col-md-4 d-flex flex-column bg-white shadow-sm p-4`}>
-                                    <h5 className={`fw-bold text-${etapa.color}`}>{etapa.id}. {etapa.title}</h5>
-                                    <p className="fs-6 text-muted m-0">{etapa.description}</p>
-                                </div>
-                            ))}
-                        </div>
+                        {!isMobile && (
+                            <div id='scroll-etapa' className="d-flex gap-2 overflow-x-scroll">
+                                {etapas.map(etapa => (
+                                    <div key={etapa.id} className={`col-md-4 d-flex flex-column bg-white shadow-sm p-4`}>
+                                        <h5 className={`fw-bold text-${etapa.color}`}>{etapa.id}. {etapa.title}</h5>
+                                        <p className="fs-6 text-muted m-0">{etapa.description}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </section>
 
-                {/* Seção de Funcionalidades */}
                 <section id='funcionalidades' className='bg-body-tertiary p-5'>
                     <div className="painel d-flex justify-content-between gap-4">
                         <div className={isMobile ? 'w-100' : 'w-25'}>
@@ -129,7 +129,6 @@ export default function LandingPage() {
                     </div>
                 </section>
 
-                {/* Seção Clientes */}
                 <section id='clientes' className='bg-body-tertiary p-5 pt-0'>
                     <h2 className='m-0 fw-bold text-primary'>| CLIENTES</h2>
                     <h4 className='m-0'>Nosso maior orgulho</h4>
@@ -141,7 +140,6 @@ export default function LandingPage() {
                 </section>
             </main>
 
-            {/* Modal de Contato */}
             <div className="modal fade" id="contato" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">

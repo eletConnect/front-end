@@ -15,7 +15,6 @@ export default function SettingsInstituicao() {
     const [logotipoUrl, setLogotipoUrl] = useState(escola.logotipo || '');
     const [loading, setLoading] = useState(false);
 
-    // Referência para o input de arquivo
     const inputFileRef = useRef(null);
 
     const verificarCEP = async (cep) => {
@@ -41,7 +40,7 @@ export default function SettingsInstituicao() {
             setLogotipoUrl(previewUrl);
 
             return () => {
-                URL.revokeObjectURL(previewUrl); // Libera a URL para evitar vazamentos de memória
+                URL.revokeObjectURL(previewUrl);
             };
         }
     };
@@ -53,7 +52,7 @@ export default function SettingsInstituicao() {
         }
 
         try {
-            const fotoPath = logotipoUrl.split('/').pop(); // Extraia o caminho do arquivo da URL
+            const fotoPath = logotipoUrl.split('/').pop();
             const { error } = await supabase.storage.from('avatar').remove([fotoPath]);
             if (error) {
                 console.error('Erro ao remover a foto:', error.message);
@@ -62,9 +61,9 @@ export default function SettingsInstituicao() {
             }
 
             setLogotipoUrl(null);
-            setLogo(null); // Redefine a variável logo para permitir a adição de outra foto
+            setLogo(null); 
             if (inputFileRef.current) {
-                inputFileRef.current.value = ''; // Limpa o input de arquivo
+                inputFileRef.current.value = '';
             }
             sessionStorage.setItem('escola', JSON.stringify({ ...escola, logotipo: null }));
             showToast('success', 'Logotipo removido com sucesso.');

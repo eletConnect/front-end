@@ -3,22 +3,21 @@ import axios from '../../../../configs/axios';
 import showToast from '../../../../utills/toasts';
 
 export default function ModalExcluirEletiva({ codigo, tipo, instituicao }) {
-    const [excluindo, setExcluindo] = useState(false); // Estado para o botão de exclusão
+    const [excluindo, setExcluindo] = useState(false);
 
     const excluirEletiva = async (e) => {
         e.preventDefault();
-        setExcluindo(true); // Ativa o estado de carregamento
-
+        setExcluindo(true); 
         try {
             const resposta = await axios.post('/eletivas/excluir', { codigo, tipo, instituicao });
             if (resposta.status === 200) {
-                sessionStorage.setItem('mensagemSucesso', resposta.data.mensagem); // Armazenar a mensagem de sucesso no sessionStorage
-                window.location.href = '/electives' // Recarregar a página para aplicar a exclusão
+                sessionStorage.setItem('mensagemSucesso', resposta.data.mensagem); 
+                window.location.href = '/electives'
             }
         } catch (erro) {
             showToast('danger', erro.response?.data.mensagem || 'Erro ao excluir a eletiva.');
         } finally {
-            setExcluindo(false); // Desativa o estado de carregamento
+            setExcluindo(false); 
         }
     };
 

@@ -91,15 +91,7 @@ export default function MHome() {
     return (
         <>
             <MHeader />
-            {/* Ajuste de layout para que o conteúdo principal comece abaixo do cabeçalho */}
-            <main
-                id="mMain"
-                style={{
-                                paddingBottom: '5em', // Espaço para rodapé
-                    overflowY: 'auto',
-                    minHeight: 'calc(100vh - 4.5em - 5em)' // Calcula a altura correta entre cabeçalho e rodapé
-                }}
-            >
+            <main id="mMain" style={{ paddingBottom: '5em', overflowY: 'auto', minHeight: 'calc(100vh - 4.5em - 5em)' }}>
                 {carregando ? (
                     <div className='d-flex flex-column align-items-center py-4'>
                         <div className="spinner-border text-primary" role="status">
@@ -109,7 +101,6 @@ export default function MHome() {
                 ) : (
                     <>
                         <div id='toast-container' className="toast-container position-absolute bottom-0 start-50 translate-middle-x mb-2"></div>
-
                         <ul className='d-flex justify-content-evenly align-items-center p-2'>
                             <li className='btn btn-sm text-decoration-underline'>{qnts.qnt_projetoVida}/{limites['Projeto de Vida']} Projeto de Vida</li>
                             {exibirAbaTrilha && (

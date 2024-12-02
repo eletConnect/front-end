@@ -168,12 +168,10 @@ const ListaChamada = React.forwardRef((props, ref) => {
                             {alunosMatriculados.length > 0 ? (
                                 alunosMatriculados.map((aluno, index) => (
                                     <tr key={aluno.matricula}>
-                                        {/* Mostrar número sequencial em vez da matrícula */}
                                         <th scope="row" className="align-middle text-center" style={{ fontSize: '10px' }}>{index + 1}</th>
                                         <td className="align-middle text-left" style={{ wordWrap: 'break-word', fontSize: '10px', whiteSpace: 'normal', overflowWrap: 'break-word' }}>{aluno.nome}</td>
                                         {Object.values(mesesComDias).flat().map((dia, diaIndex) => (
                                             <td key={diaIndex} className="text-center align-middle" style={{ height: '20px', fontSize: '8px', padding: '0px' }}>
-                                                {/* Célula vazia para preenchimento manual */}
                                             </td>
                                         ))}
                                     </tr>
@@ -209,7 +207,6 @@ export default function ChamadaComImpressao() {
 
     return (
         <div>
-            {/* Passa a referência para o componente ListaChamada */}
             <ListaChamada ref={componentRef} onPrint={handlePrint} />
         </div>
     );

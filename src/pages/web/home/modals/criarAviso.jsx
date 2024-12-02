@@ -7,14 +7,14 @@ function CriarAvisoModal({ seriesOpcoes, setAvisos }) {
     const [avisoParaCriar, setAvisoParaCriar] = useState({
         titulo: '',
         conteudo: '',
-        cor: 'primary', // Definindo uma cor padrão
+        cor: 'primary', 
         exclusivo: false,
         exclusividade: '',
         series: [],
         serie: '',
         turma: '',
     });
-    const turmasOpcoes = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i)); // Turmas de A a Z
+    const turmasOpcoes = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
     const user = JSON.parse(sessionStorage.getItem('user'));
 
     const criarAviso = async () => {

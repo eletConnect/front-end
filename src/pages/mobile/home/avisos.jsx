@@ -6,7 +6,7 @@ import '../../../assets/styles/my-bootstrap.css';
 
 export default function Home() {
     const [aulas, setAulas] = useState([]);
-    const [avisos, setAvisos] = useState([]); // Estado para os avisos
+    const [avisos, setAvisos] = useState([]); 
     const [carregando, setCarregando] = useState(true);
 
     const aluno = JSON.parse(sessionStorage.getItem('aluno'));
@@ -15,14 +15,12 @@ export default function Home() {
         const carregarDados = async () => {
             setCarregando(true);
             try {
-                // Carregar avisos
                 const { data: avisosData } = await axios.post('/m/avisos/exibir-avisos', {
                     instituicao: aluno.instituicao,
                     serie: aluno.serie,
                     turma: aluno.turma
                 });
 
-                // Ordena avisos mais recentes primeiro
                 const avisosOrdenados = avisosData.avisos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                 setAvisos(avisosOrdenados || []);
             } catch (error) {
@@ -47,13 +45,11 @@ export default function Home() {
                     </div>
                 ) : (
                     <div className="d-flex flex-column gap-4">
-                        {/* Quadro de Avisos */}
                         <div id="AREA-QUADRO">
                             <div className="d-flex justify-content-between align-items-center mb-2">
                                 <div className="d-flex align-items-center gap-2">
                                     <i className="bi bi-bell h4 mb-0"></i>
                                     <h6 className="mb-0">QUADRO DE AVISOS</h6>
-                                    {/* Mostrar badge apenas se houver mais de um aviso */}
                                     {avisos.length > 1 && (
                                         <span className="badge text-bg-danger">{avisos.length}</span>
                                     )}
@@ -63,10 +59,7 @@ export default function Home() {
 
                             {avisos.length > 0 ? (
                                 avisos.map((aviso, index) => (
-                                    <div
-                                        key={index}
-                                        className={`shadow-sm border-left-${aviso.cor || 'primary'} bg-light-subtle p-3 mb-3`}
-                                    >
+                                    <div key={index} className={`shadow-sm border-left-${aviso.cor || 'primary'} bg-light-subtle p-3 mb-3`} >
                                         <h6 className={`text-${aviso.cor || 'primary'}`}>
                                             {aviso.titulo || 'Sem título'}
                                         </h6>

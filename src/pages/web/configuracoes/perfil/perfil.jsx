@@ -15,7 +15,6 @@ export default function SettingsPerfil() {
     const [fotoUrl, setFotoUrl] = useState(user?.foto && user.foto !== 'https://via.placeholder.com/250' ? user.foto : null);
     const [loading, setLoading] = useState(false);
 
-    // Referência para o input de arquivo
     const inputFileRef = useRef(null);
 
     useEffect(() => {
@@ -32,7 +31,7 @@ export default function SettingsPerfil() {
             setFotoUrl(previewUrl);
 
             return () => {
-                URL.revokeObjectURL(previewUrl); // Libera a URL para evitar vazamentos de memória
+                URL.revokeObjectURL(previewUrl); 
             };
         }
     };
@@ -44,7 +43,7 @@ export default function SettingsPerfil() {
         }
 
         try {
-            const fotoPath = fotoUrl.split('/').pop(); // Extraia o caminho do arquivo da URL
+            const fotoPath = fotoUrl.split('/').pop(); 
             const { error } = await supabase.storage.from('avatar').remove([fotoPath]);
             if (error) {
                 console.error('Erro ao remover a foto:', error.message);
@@ -53,9 +52,9 @@ export default function SettingsPerfil() {
             }
 
             setFotoUrl(null);
-            setFoto(null); // Redefine a variável foto
+            setFoto(null); 
             if (inputFileRef.current) {
-                inputFileRef.current.value = ''; // Limpa o input de arquivo
+                inputFileRef.current.value = '';
             }
             sessionStorage.setItem('user', JSON.stringify({ ...user, foto: null }));
             showToast('success', 'Foto removida com sucesso.');
@@ -68,7 +67,7 @@ export default function SettingsPerfil() {
     const armazenarFoto = async () => {
         if (!foto) {
             console.warn('Nenhuma foto foi selecionada para upload.');
-            return null; // Retorna null para indicar que nenhuma nova foto foi carregada
+            return null;
         }
 
         const caminhoFoto = `FOTO_${Date.now()}`;
@@ -106,7 +105,7 @@ export default function SettingsPerfil() {
         setLoading(true);
         console.log('Iniciando envio de dados para o backend...');
 
-        let fotoUrlAtualizado = fotoUrl; // Preserva a URL atual da foto
+        let fotoUrlAtualizado = fotoUrl; 
         if (foto) {
             fotoUrlAtualizado = await armazenarFoto();
             console.log('URL da foto atualizada:', fotoUrlAtualizado);
@@ -123,12 +122,12 @@ export default function SettingsPerfil() {
                 id,
                 nome: uNome,
                 email: uEmail,
-                avatar: fotoUrlAtualizado !== 'https://via.placeholder.com/250' ? fotoUrlAtualizado : null, // Trate a URL de placeholder como null
+                avatar: fotoUrlAtualizado !== 'https://via.placeholder.com/250' ? fotoUrlAtualizado : null,
             };
             console.log('Payload enviado para o backend:', payload);
 
             const response = await axios.post('/auth/update-profile', payload);
-            console.log('Resposta da API:', response); // Log para verificar a resposta da API
+            console.log('Resposta da API:', response);
 
             if (response.status === 200) {
                 sessionStorage.setItem('user', JSON.stringify({ ...user, nome: uNome, email: uEmail, foto: fotoUrlAtualizado }));
@@ -137,7 +136,7 @@ export default function SettingsPerfil() {
                 window.location.reload();
             }
         } catch (error) {
-            console.error('Erro ao atualizar perfil:', error); // Log detalhado do erro
+            console.error('Erro ao atualizar perfil:', error); 
             showToast('danger', error.response?.data?.mensagem || 'Erro ao atualizar o perfil.');
         } finally {
             setLoading(false);

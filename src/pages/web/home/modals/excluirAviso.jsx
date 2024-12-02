@@ -6,7 +6,7 @@ function ExcluirAvisoModal({ avisoSelecionado, user, setAvisos }) {
   const [loadingExcluir, setLoadingExcluir] = useState(false);
 
   const excluirAviso = async () => {
-    setLoadingExcluir(true); // Inicia o indicador de carregamento
+    setLoadingExcluir(true); 
     try {
       const response = await axios.post('/home/excluir-aviso', { id: avisoSelecionado.id, instituicao: user.instituicao });
       if (response.status = 200) {
@@ -16,7 +16,7 @@ function ExcluirAvisoModal({ avisoSelecionado, user, setAvisos }) {
     } catch (error) {
       showToast('danger', error.response?.data?.mensagem || 'Erro ao excluir aviso.');
     } finally {
-      setLoadingExcluir(false); // Finaliza o indicador de carregamento
+      setLoadingExcluir(false); 
     }
   };
 

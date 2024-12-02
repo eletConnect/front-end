@@ -29,12 +29,11 @@ export default function Alunos() {
     }, []);
 
     useEffect(() => {
-        // Verifica se há uma mensagem de sucesso armazenada no sessionStorage
         const mensagem = sessionStorage.getItem('mensagemSucesso');
         if (mensagem) {
             setMensagemSucesso(mensagem);
-            showToast('success', mensagem); // Exibe a mensagem com um toast
-            sessionStorage.removeItem('mensagemSucesso'); // Remove a mensagem após exibir
+            showToast('success', mensagem); 
+            sessionStorage.removeItem('mensagemSucesso'); 
         }
     }, []);
 
@@ -57,7 +56,7 @@ export default function Alunos() {
             coluna,
             ascendente: prevState.coluna === coluna ? !prevState.ascendente : true,
         }));
-        setPaginaAtual(1); // Reiniciar para a primeira página após alterar a ordenação
+        setPaginaAtual(1); 
     };
 
     const compararValores = (a, b) => {
@@ -66,7 +65,6 @@ export default function Alunos() {
         const numA = Number(valorA);
         const numB = Number(valorB);
 
-        // Comparar como número se possível, caso contrário comparar como string
         if (!isNaN(numA) && !isNaN(numB)) {
             return ordenacao.ascendente ? numA - numB : numB - numA;
         }
@@ -74,7 +72,6 @@ export default function Alunos() {
         return ordenacao.ascendente ? valorA.localeCompare(valorB) : valorB.localeCompare(valorA);
     };
 
-    // Filtro e ordenação dos alunos
     const alunosFiltradosEOrdenados = alunos
         .filter(({ nome, matricula }) =>
             nome.toLowerCase().includes(textoFiltro.toLowerCase()) ||
@@ -82,8 +79,6 @@ export default function Alunos() {
         )
         .sort((a, b) => compararValores(a, b));
 
-
-    // Paginação
     const totalPaginas = Math.ceil(alunosFiltradosEOrdenados.length / itensPorPagina);
     const alunosPaginados = alunosFiltradosEOrdenados.slice(
         (paginaAtual - 1) * itensPorPagina,
@@ -120,7 +115,6 @@ export default function Alunos() {
         return `${inicio} - ${fim}`;
     };
 
-    // Manipular a seleção/deseleção de um aluno
     const toggleSelecionarAluno = (matricula) => {
         setAlunosSelecionados((prevSelecionados) =>
             prevSelecionados.includes(matricula)
@@ -129,7 +123,6 @@ export default function Alunos() {
         );
     };
 
-    // Selecionar ou desmarcar todos os alunos da página atual
     const toggleSelecionarTodos = (selecionar) => {
         const matriculasPaginaAtual = alunosPaginados.map((aluno) => aluno.matricula);
         if (selecionar) {
@@ -144,7 +137,6 @@ export default function Alunos() {
         }
     };
 
-    // Renderizar a lista de alunos
     const renderAlunos = () => {
         if (alunosPaginados.length === 0) {
             return (
@@ -353,7 +345,6 @@ export default function Alunos() {
                 </section>
             </main>
 
-            {/* Modais */}
             <CadastrarAluno escola={escola} />
             <CadastrarPlanilha escola={escola} />
 
@@ -370,7 +361,6 @@ export default function Alunos() {
     );
 }
 
-// Função para obter a classe CSS do badge de acordo com o tipo
 const obterClasseBadge = (tipo) => {
     const classes = {
         'Trilha': 'text-bg-primary',

@@ -5,7 +5,7 @@ import showToast from '../../../../utills/toasts';
 function EditarAvisoModal({ avisoSelecionado, setAvisoSelecionado, seriesOpcoes, setAvisos }) {
     const [avisoParaEditar, setAvisoParaEditar] = useState({});
     const [loadingEditar, setLoadingEditar] = useState(false);
-    const turmasOpcoes = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i)); // Turmas de A a Z
+    const turmasOpcoes = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i)); 
     const user = JSON.parse(sessionStorage.getItem('user'));
 
     useEffect(() => {
@@ -53,19 +53,16 @@ function EditarAvisoModal({ avisoSelecionado, setAvisoSelecionado, seriesOpcoes,
         }));
     };
 
-    // Função para lidar com a mudança de exclusividade
     const handleExclusividadeChange = (value) => {
-        // Atualiza a exclusividade e redefine os campos relacionados
         setAvisoParaEditar(prev => ({
             ...prev,
             exclusividade: value,
-            series: value === 'serie' ? [] : prev.series, // Limpa as séries se a exclusividade não for 'serie'
-            serie: value === 'turma' ? '' : prev.serie,  // Limpa a série se a exclusividade não for 'turma'
-            turma: value === 'turma' ? '' : prev.turma,  // Limpa a turma se a exclusividade não for 'turma'
+            series: value === 'serie' ? [] : prev.series, 
+            serie: value === 'turma' ? '' : prev.serie, 
+            turma: value === 'turma' ? '' : prev.turma,
         }));
     };
 
-    // Função para lidar com o switch de "exclusivo"
     const handleExclusivoSwitch = (e) => {
         const isExclusivo = e.target.checked;
         setAvisoParaEditar({
@@ -218,7 +215,7 @@ function EditarAvisoModal({ avisoSelecionado, setAvisoSelecionado, seriesOpcoes,
                                             name="exclusividade"
                                             value="serie"
                                             checked={avisoParaEditar?.exclusividade === 'serie'}
-                                            onChange={() => handleExclusividadeChange('serie')} // Chamada correta da função
+                                            onChange={() => handleExclusividadeChange('serie')}
                                         />
                                         <label className="form-check-label" htmlFor="exclusividadeSerie">Por série</label>
                                     </div>
@@ -230,7 +227,7 @@ function EditarAvisoModal({ avisoSelecionado, setAvisoSelecionado, seriesOpcoes,
                                             name="exclusividade"
                                             value="turma"
                                             checked={avisoParaEditar?.exclusividade === 'turma'}
-                                            onChange={() => handleExclusividadeChange('turma')} // Chamada correta da função
+                                            onChange={() => handleExclusividadeChange('turma')}
                                         />
                                         <label className="form-check-label" htmlFor="exclusividadeTurma">Por turma</label>
                                     </div>

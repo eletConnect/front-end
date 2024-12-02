@@ -20,7 +20,6 @@ function BotaoInstalacao() {
 
     window.addEventListener('beforeinstallprompt', prepararInstalacao);
 
-    // Verifica se o aplicativo está instalado
     if (window.matchMedia('(display-mode: standalone)').matches) {
       navigate('/m/login');
     }

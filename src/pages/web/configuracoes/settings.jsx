@@ -4,7 +4,7 @@ import Header from "../../../components/header";
 import EditarPerfil from "./perfil/perfil";
 import EditarSenha from "../auth/changePassword";
 import EditarInstituicao from "./instituicao/editarInstituicao";
-import showToast from '../../../utills/toasts';  // Certifique-se de que o showToast está importado corretamente
+import showToast from '../../../utills/toasts'; 
 
 export default function Settings() {
     const [modalContent, setModalContent] = useState(null);
@@ -16,11 +16,10 @@ export default function Settings() {
         const user = JSON.parse(sessionStorage.getItem('user'));
         setUserRole(user?.cargo || '');
 
-        // Verificar se há uma mensagem de sucesso no sessionStorage e exibi-la
         const mensagemSucesso = sessionStorage.getItem('mensagemSucesso');
         if (mensagemSucesso) {
-            showToast('success', mensagemSucesso);  // Exibe o toast com a mensagem de sucesso
-            sessionStorage.removeItem('mensagemSucesso');  // Remove a mensagem após exibir
+            showToast('success', mensagemSucesso); 
+            sessionStorage.removeItem('mensagemSucesso');  
         }
     }, []);
 

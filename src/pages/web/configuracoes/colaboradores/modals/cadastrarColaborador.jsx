@@ -62,8 +62,8 @@ export default function CadastrarColaboradorModal({ listarColaboradores, institu
                                         id="matricula"
                                         value={dadosColaborador.matricula}
                                         onChange={(e) => setDadosColaborador({ ...dadosColaborador, matricula: e.target.value })}
-                                        pattern="[0-9]+" // Apenas números permitidos
-                                        maxLength="11" // Limite de 10 caracteres
+                                        pattern="[0-9]+" 
+                                        maxLength="11"
                                         title="Apenas números são permitidos"
                                         required
                                     />
@@ -81,8 +81,8 @@ export default function CadastrarColaboradorModal({ listarColaboradores, institu
                                         id="nome"
                                         value={dadosColaborador.nome}
                                         onChange={(e) => setDadosColaborador({ ...dadosColaborador, nome: e.target.value })}
-                                        pattern="[A-Za-zÀ-ÿ\s]+" // Aceita letras com acentos e espaços
-                                        maxLength="76" // Limite de 75 caracteres
+                                        pattern="[A-Za-zÀ-ÿ\s]+" 
+                                        maxLength="76" 
                                         title="Apenas letras e espaços são permitidos"
                                         required
                                     />
@@ -116,7 +116,7 @@ export default function CadastrarColaboradorModal({ listarColaboradores, institu
                                         id="email"
                                         value={dadosColaborador.email}
                                         onChange={(e) => setDadosColaborador({ ...dadosColaborador, email: e.target.value })}
-                                        maxLength="101" // Limite de 100 caracteres
+                                        maxLength="101" 
                                         title="Digite um endereço de e-mail válido"
                                         required
                                     />

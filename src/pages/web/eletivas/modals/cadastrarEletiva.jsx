@@ -13,8 +13,8 @@ const INITIAL_STATE = {
     serie: '',
     turma: '',
     isExclusiva: false,
-    exclusividade: '', // Adicionado para indicar a exclusividade
-    series: [], // Adicionado para múltiplas séries
+    exclusividade: '', 
+    series: [], 
 };
 
 const seriesOpcoes = ['1º ano', '2º ano', '3º ano'];

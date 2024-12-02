@@ -18,7 +18,7 @@ const obterPrioridadeHorario = (horario) => {
 
 export default function Home() {
     const [aulas, setAulas] = useState([]);
-    const [avisos, setAvisos] = useState([]);  // Estado para os avisos
+    const [avisos, setAvisos] = useState([]); 
     const [diaSelecionado, setDiaSelecionado] = useState('');
     const [carregando, setCarregando] = useState(true);
 
@@ -28,20 +28,17 @@ export default function Home() {
         const carregarDados = async () => {
             setCarregando(true);
             try {
-                // Carregar eletivas
                 const { data: eletivasData } = await axios.post('/m/eletivas/minhas-eletivas', {
                     matricula: aluno.matricula,
                     instituicao: aluno.instituicao
                 });
                 setAulas(eletivasData.eletivas || []);
 
-                // Carregar avisos
                 const { data: avisosData } = await axios.post('/m/avisos/exibir-avisos', {
                     instituicao: aluno.instituicao,
                     serie: aluno.serie,
                     turma: aluno.turma
                 });
-                // Ordena avisos mais recentes primeiro
                 const avisosOrdenados = avisosData.avisos.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
                 setAvisos(avisosOrdenados || []);
             } catch (error) {
@@ -74,7 +71,6 @@ export default function Home() {
                     </div>
                 ) : (
                     <div className="d-flex flex-column gap-4">
-                        {/* Quadro de Avisos */}
                         <div id='AREA-QUADRO'>
                             <div className="d-flex justify-content-between align-items-center mb-2">
                                 <div className="d-flex align-items-center gap-2">
@@ -100,7 +96,6 @@ export default function Home() {
 
                         </div>
 
-                        {/* Aulas */}
                         <div id='AREA-AULAS'>
                             <div className="d-flex justify-content-between align-items-center mb-2">
                                 <div className="d-flex align-items-center gap-2">

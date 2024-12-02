@@ -34,26 +34,7 @@ export default function MFooter() {
                 {itensMenu.map((item, index) => (
                     <MenuItem key={index} path={item.path} label={item.label} icon={item.icon} />
                 ))}
-                {/* <button 
-                    onClick={toggleMenu} 
-                    className='position-absolute top-0 start-50 translate-middle rounded-circle cor-menu'>
-                    <i className="bi bi-list position-absolute top-50 start-50 translate-middle text-white fs-1"></i>
-                </button> */}
             </ul>
-
-            {/* <div className={`menu-overlay ${menuOpen ? 'show' : ''}`}>
-                <ul className='footer-menu'>
-                    {itensMenu_OVERLAY.map((item, index) => (
-                        <MenuItem 
-                            key={index}
-                            path={item.path}
-                            label={item.label}
-                            icon={item.icon}
-                            className="overlay-item"
-                        />
-                    ))}
-                </ul>
-            </div> */}
         </footer>
     );
 }
