@@ -89,9 +89,9 @@ export default function LandingPage() {
                             <p className="fs-5">O eletConnect facilita a inscrição de alunos em disciplinas eletivas, permitindo escolhas rápidas pelo celular ou computador. Para gestores, oferece ferramentas para organizar turmas, horários e exclusividades, além de acompanhar matrículas em tempo real e gerar relatórios, otimizando a gestão escolar.</p>
                             <a className="btn btn-primary" href={isMobile ? "/m/login" : "/login"}>Começar</a>
                         </div>
-                        <div className="col-md-4 text-center">
+                        {!isMobile && (<div className="col-md-4 text-center">
                             <img src={imgSelect} width={350} alt="Imagem de transformação digital" />
-                        </div>
+                        </div>)}
                         {!isMobile && (
                             <div id='scroll-etapa' className="d-flex gap-2 overflow-x-scroll">
                                 {etapas.map(etapa => (
@@ -167,7 +167,7 @@ export default function LandingPage() {
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                             <button type="submit" form="formContato" className="btn btn-primary">Enviar</button>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
