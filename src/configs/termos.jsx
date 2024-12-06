@@ -197,8 +197,7 @@ const TermosPolitica = () => {
                     </p>
                     <ul>
                         <li>E-mail: <a href="mailto:eletconnect@gmail.com">eletconnect@gmail.com</a></li>
-                        <li>Telefone: (61) 1234-5678</li>
-                    </ul>
+                   </ul>
                 </>
             ),
         },
